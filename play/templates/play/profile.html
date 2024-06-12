@@ -1,0 +1,908 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+	<title>User Profile</title>
+
+
+	<!--favicon-->
+	<link rel="icon" href="static/img/favicon.png" type="image/x-icon">
+
+	<!-- Bootstrap core CSS-->
+	<!-- <link href="static/assets/css/bootstrap.min.css" rel="stylesheet"/> -->
+
+	<!-- Bootstrap -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+
+	<!-- Icons CSS-->
+	<link href="static/assets/css/icons.css" rel="stylesheet" type="text/css"/>
+
+	<!-- Sidebar CSS-->
+	<link href="static/assets/css/sidebar-menu.css" rel="stylesheet" />
+
+	<!-- Custom Style-->
+	<link href="static/assets/css/app-style.css" rel="stylesheet" /> 
+
+	 <!-- script files  -->
+	 <!-- for modal  -->
+	 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script> 
+
+</head>
+
+
+<style>
+  .customTable{
+    text-align: center;
+  }
+
+  .forPhoto{
+    border-radius: 50%;
+    float: center;
+    height: 171px;
+  }
+
+  .forPhoto:hover{
+	box-shadow: 0px 0px 20px white;
+  }
+
+  .themeClass{
+    height:100px !important;
+    width: 100px !important;
+  }
+
+  #themeButton{
+    background: none;
+    border: none;
+    height:100px;
+    width:100px;
+    margin:5px;
+  }
+
+  .siteThemeButton{
+    border:2px solid white;
+    border-radius: 20px;
+	height : 40px;
+    background: none;
+    color:white;
+    padding-right: 30px;
+    padding-left: 30px;
+  }
+
+  .deleteButton{
+    border:2px solid white;
+    border-radius: 20px;
+	height : 40px;
+	width:200px;
+    background: none;
+    color:white;
+    padding-right: 50px;
+    padding-left: 50px;
+  }
+
+  .siteThemeButton:hover, .updateProfile:hover {
+    background-color: white;
+    color: black;
+  }
+
+  .deleteButton:hover {
+    background-color: red !important;
+    color: white !important;
+  }
+
+  .updateProfile{
+    border:2px solid white;
+    border-radius: 25px;
+	height: 40px;
+    background: none;
+    color:white;
+    padding-right: 30px;
+    padding-left: 30px;
+  }
+
+
+  .extraSpin{
+    padding: 10px;
+    color:white;
+  }
+
+.alertMsg{
+	display: none;
+	color:white;
+	position: absolute;
+	padding: 10px;
+	border: 1 px solid;
+	text-align: center;
+	border-radius: 10px;
+	background: green;
+	/* margin-left: 20%; */
+	min-width: 200px;
+	width: 83%;
+}
+
+.messageBox{
+	border:1px solid white;
+	width: 100%;
+	background: none;
+	border-radius: 10px;
+	color:white;
+	padding: 10px;
+}
+
+.input_box{
+	background: none;
+	color: white;
+	border:1px white solid;
+	border-radius: 20px;
+	padding:5px;
+	text-align: center;
+}
+
+/* Search bar  */
+::selection{
+  color: #fff;
+  background: #664AFF;
+}
+
+
+.search-input{
+  /* background: rgba(255, 255, 255, 0.4); */
+  width: 40%;
+  border-radius: 5px;
+  position: absolute;
+  /* box-shadow: 0px 1px 5px 3px rgba(0,0,0,0.12); */
+  margin-top: -17px;
+}
+
+.search-input input{
+  height: auto;
+  width: 111%;
+  outline: none;
+  border: 1px solid rgb(255,255,255,0.2);
+  border-radius: 5px;
+  padding: 4px 60px 4px 15px;
+  font-size: 13px;
+  box-shadow: 0px 0px 0px rgba(0,0,0,0.1);
+  background-color: rgb(255,255,255,0.2);
+  color: white;
+}
+
+.search-input.active input{
+  border-radius: 5px 5px 0 0;
+}
+
+.search-input .autocom-box{
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.search-input.active .autocom-box{
+  padding: 4px 4px;
+  opacity: 1;
+  border-radius: 5px;
+  font-size: 15px;
+  background-color: rgb(0,0,0,0.3);
+  color:white;
+  width:89%;
+  pointer-events: auto;
+}
+
+.autocom-box li{
+  list-style: none;
+  padding: 4px 12px;
+  display: none;
+  cursor: default;
+  border-radius: 5px;
+}
+
+.search-input.active .autocom-box li{
+  display: block;
+}
+.autocom-box li:hover{
+  background: rgb(255,255,255,0.7);
+  color:black;
+}
+
+.search-input .icon{
+  position: static;
+  right: 0px;
+  top: 0px;
+  text-align: right;
+  line-height: 38px;
+  font-size: 14px;
+  width: 25px;
+  padding-right: 8px;
+  color: white;
+  cursor: pointer;
+}
+
+.iconExtra{
+  position:relative;
+  left:-161%;
+}
+</style>
+
+<body id="boddy">
+	<!-- Start wrapper-->
+	<div id="wrapper">
+		<!--Start sidebar-wrapper-->
+		<div id="sidebar-wrapper" data-simplebar="" data-simplebar-auto-hide="true">
+			<div class="brand-logo">
+				<a href="{% url 'loggedIn' %}"> <img src="{% static 'img/logo.png' %}" class="logo-icon" alt="logo icon">
+					<h5 class="logo-text">MeTube</h5> </a>
+			</div>
+			<ul class="sidebar-menu do-nicescrol">
+				<li class="sidebar-header">NAVIGATION</li>
+				<li>
+					<a href="{% url 'loggedIn' %}"> <i class="zmdi zmdi-view-dashboard"></i> <span>Dashboard</span> </a>
+				</li>
+				<li>
+					<a href="{% url 'playlists_page' %}"> <i class="zmdi zmdi-format-list-bulleted"></i> <span>Playlists</span> </a>
+				</li>
+				<hr>
+				<li class="sidebar-header">ACCOUNTS</li>
+				<li>
+					<a href="{% url 'profile' %}"> <i class="zmdi zmdi-face"></i> <span>Profile</span> <small class="badge float-right badge-light">New</small> </a>
+				</li>
+				<hr>
+				<li>
+					<a href="{% url 'logout_handler' %}"> <i class="zmdi zmdi-lock"></i> <span>Logout</span> </a>
+				</li>
+			</ul>
+		</div>
+		<!--End sidebar-wrapper-->
+		
+		<!--Start topbar header-->
+		<header class="topbar-nav">
+			<nav class="navbar navbar-expand fixed-top">
+				<ul class="navbar-nav mr-auto align-items-center">
+					<li class="nav-item">
+						<a class="nav-link toggle-menu" href="javascript:void();"> <i class="icon-menu menu-icon"></i> </a>
+					</li>
+					<!-- search bar -->
+					<li class="nav-item">
+						<div class="search-input">
+						  <a class="nav-link scrollto active" href="" hidden></a>
+				  
+						  <div style="width: 84%; float:left;">
+							<input type="text" placeholder="Search..." class="extraInput">
+						  </div>
+				  
+						  <div class="icon" style="width: 10%;float:right;  position:relative">
+							<i class="icon-magnifier iconExtra"></i>
+						  </div>
+				  
+						  
+						<div class="autocom-box"></div>
+				  
+						</div>
+					</li>
+
+					<li>
+						<div class="alertMsg" id="alertMsg">Success</div>
+					</li>
+					<li>
+						<div class="alertMsg" id="alertMsg2">Not available for Demo User! Please LogIn</div>
+					</li>
+				</ul>
+			</nav>
+		</header>
+
+
+
+
+<!--End topbar header-->
+<div class="clearfix"></div>
+	<div class="content-wrapper">
+	    <div class="container-fluid">
+
+		<!-- new row -->
+		<div class="row mt-12" id="user_details">
+			<div class="col-lg-8">
+				<div class="card">
+					<div class="card-body">
+						<div class="table-responsive">
+							<table class="table customTable">
+								<tbody>
+									<tr>
+										<td>Username</td>
+										<td><input id="newUN" value="{{ username }}" class="input_box" onfocus="border_change(id)"></td>
+									</tr>
+									<tr>
+										<td>Name</td>
+										<td><input id="newN" value="{{ name }}" class="input_box" onfocus="border_change(id)"></td>
+									</tr>
+									<tr>
+										<td>Email</td>
+										<td>{{ email }}</td>
+									</tr>
+									<tr>
+										<td>Last Online</td>
+										<td>{{ last_online }}</td>
+									</tr>
+									<tr>
+										<td>Youtube Channel</td>
+										<td>{{ yt_title }}</td>
+									</tr>
+									<tr>
+										<td>Youtube Channel ID</td>
+										<td>{{ yt_id }}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-lg-4" id="profile_picture">
+				<div class="card">
+					<div class="card-body">
+						<div class="col-lg-12 col-sm-12 col-lg-12 col-12" style=" display: flex; justify-content: center; align-items: center;"><a id="photoLink" target="_blank" href="https://www.youtube.com/"><img class="forPhoto" src="{{ photo }}" alt="user avatar"></a>
+						</div>
+						<br>
+						<div class="col-lg-12 col-sm-12 col-lg-12 col-12" >
+							
+							<div style=" display: flex; justify-content: center; align-items: center;"><strong>Profile picture</strong></div>
+							<hr>
+							<div style=" display: flex; justify-content: center; align-items: center;"><strong><button class="updateProfile" onclick="updateProfile()">Update Profile</button></strong></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--End Row-->
+
+		<br>
+
+        <!-- new row CUSTOMIZE-->
+        <div class="row mt-12" id="theme_customization">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="row mt-12"> 
+                  <div class="col-lg-6 col-sm-6 col-lg-6 col-6" style=" display: flex; justify-content: center; align-items: center;">
+                    <strong><h5 style="padding-top: 10px;">CUSTOMIZATION</h5></strong>
+                    <i class="zmdi zmdi-settings zmdi-hc-spin extraSpin"></i>
+                  </div>
+                  <div class="col-lg-6 col-sm-6 col-lg-6 col-6" style=" display: flex; justify-content: center; align-items: center;">
+                    <button style="font-size:small;" onclick="fetch_data_ajax()" class="siteThemeButton">Set Preference</button>
+                  </div>
+                </div>
+                	<hr>
+					<p class="mb-0">Gradient Background</p>
+					<br>
+                    <ul class="switcher">
+                      <button id="themeButton"><li id="theme7" class="themeClass" onclick="changeTheme(id)"></li></button>
+                      <button id="themeButton"><li id="theme8" class="themeClass" onclick="changeTheme(id)"></li></button>
+                      <button id="themeButton"><li id="theme9" class="themeClass" onclick="changeTheme(id)"></li></button>
+                      <button id="themeButton"><li id="theme10" class="themeClass" onclick="changeTheme(id)"></li></button>
+                      <button id="themeButton"><li id="theme11" class="themeClass" onclick="changeTheme(id)"></li></button>
+                      <button id="themeButton"><li id="theme12" class="themeClass" onclick="changeTheme(id)"></li></button>
+                      <button id="themeButton"><li id="theme13" class="themeClass" onclick="changeTheme(id)"></li></button>
+                      <button id="themeButton"><li id="theme14" class="themeClass" onclick="changeTheme(id)"></li></button>
+                      <button id="themeButton"><li id="theme15" class="themeClass" onclick="changeTheme(id)"></li></button>
+                    </ul>
+                	<hr>
+					<p class="mb-0">Gaussion Texture</p>
+					<br>
+                    <ul class="switcher">
+                      <button id="themeButton"><li id="theme1" class="themeClass" onclick="changeTheme(id)"></li></button>
+                      <button id="themeButton"><li id="theme2" class="themeClass" onclick="changeTheme(id)"></li></button>
+                      <button id="themeButton"><li id="theme3" class="themeClass" onclick="changeTheme(id)"></li></button>
+                      <button id="themeButton"><li id="theme4" class="themeClass" onclick="changeTheme(id)"></li></button>
+                      <button id="themeButton"><li id="theme5" class="themeClass" onclick="changeTheme(id)"></li></button>
+                      <button id="themeButton"><li id="theme6" class="themeClass" onclick="changeTheme(id)"></li></button>
+                    </ul>
+                    <hr>
+                <!--end color switcher-->
+              </div>
+            </div>
+          </div>
+          
+        </div>
+		<!--End Row-->
+
+		<br>
+
+		<!-- new row  REPORT-->
+        <div class="row mt-12" id="report_message">
+			<div class="col-lg-12">
+			  	<div class="card">
+					<div class="card-body">
+						<div class="row mt-12"> 
+							<div class="col-lg-6 col-sm-6 col-lg-6 col-6" style=" display: flex; justify-content: center; align-items: center;">
+							<strong><h5>Report Bug</h5></strong>
+							</div>
+							<div class="col-lg-6 col-sm-6 col-lg-6 col-6" style=" display: flex; justify-content: center; align-items: center;">
+							<button id="saveThemeButton" onclick="send_ajax('bug')" class="siteThemeButton">Send</button>
+							</div>
+						</div>
+						<br>
+						<textarea id="bug_report" class="messageBox" name="w3review" rows="2" cols="50"></textarea>
+					</div>
+					<hr>
+					<div class="card-body">
+						<div class="row mt-12"> 
+							<div class="col-lg-6 col-sm-6 col-lg-6 col-6" style=" display: flex; justify-content: center; align-items: center;">
+							<strong><h5>Request Feature</h5></strong>
+							</div>
+							<div class="col-lg-6 col-sm-6 col-lg-6 col-6" style=" display: flex; justify-content: center; align-items: center;">
+							<button id="saveThemeButton" onclick="send_ajax('feature')" class="siteThemeButton">Send</button>
+							</div>
+						</div>
+						<br>
+						<textarea id="feature_request" class="messageBox" name="w3review" rows="2" cols="50"></textarea>
+					</div>
+			  	</div>
+				
+			</div>
+		</div>
+		  <!--End Row-->
+
+		<br>
+		
+		<!-- new row  delete account-->
+		<div class="row mt-12" id="delete_account_div">
+			<div class="col-lg-12">
+					<div class="card">
+					<div class="card-body">
+						<div class="row mt-12"> 
+							<div class="col-lg-6 col-sm-6 col-lg-6 col-6" style=" display: flex; justify-content: center; align-items: center;">
+							<strong><h5>Permanently Delete my account</h5></strong>
+							</div>
+							<div class="col-lg-6 col-sm-6 col-lg-6 col-6" style=" display: flex; justify-content: center; align-items: center;">
+							<button type="button" data-toggle="modal" data-target="#deleteModal" id="deleteButton"  class="deleteButton" >Delete</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--End Row-->
+
+
+	</div>
+	<!-- End container-fluid-->
+
+	<!--start overlay-->
+	<div class="overlay toggle-menu"></div>
+	<!--end overlay-->
+
+
+	</div>
+	<!--End content-wrapper-->
+
+	<!--Start Back To Top Button--><a href="javaScript:void();" class="back-to-top"><i class="fa fa-angle-double-up"></i> </a>
+	<!--End Back To Top Button-->
+
+	<!--Start footer-->
+	<footer class="footer">
+		<div class="container">
+			<div class="text-center"> Copyright © 2021 Zodiac and Co.</div>
+		</div>
+	</footer>
+	<!--End footer-->
+
+
+	<!--start color switcher-->
+	<div class="right-sidebar" style="display:none;">  
+		<div class="switcher-icon"> <i class="zmdi zmdi-settings zmdi-hc-spin"></i> </div>
+		<div class="right-sidebar-content">
+			<p class="mb-0">Gaussion Texture</p>
+			<hr>
+			<ul class="switcher">
+				<button id="themeButton"><li id="theme1"></li></button>
+				<button id="themeButton"><li id="theme2"></li></button>
+				<button id="themeButton"><li id="theme3"></li></button>
+				<button id="themeButton"><li id="theme4"></li></button>
+				<button id="themeButton"><li id="theme5"></li></button>
+				<button id="themeButton"><li id="theme6"></li></button>
+			</ul>
+			<p class="mb-0">Gradient Background</p>
+			<hr>
+			<ul class="switcher">
+				<button id="themeButton"><li id="theme7"></li></button>
+				<button id="themeButton"><li id="theme8"></li></button>
+				<button id="themeButton"><li id="theme9"></li></button>
+				<button id="themeButton"><li id="theme10"></li></button>
+				<button id="themeButton"><li id="theme11"></li></button>
+				<button id="themeButton"><li id="theme12"></li></button>
+				<button id="themeButton"><li id="theme13"></li></button>
+				<button id="themeButton"><li id="theme14"></li></button>
+				<button id="themeButton"><li id="theme15"></li></button>
+			</ul>
+			<p class="mb-0">Remember Preference</p>
+			<hr> </div>
+	</div>
+	<!--end color switcher-->
+	</div>
+	<!--End wrapper-->
+
+	<!-- Delete Modal -->
+	<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModal" aria-hidden="true">
+		<div class="modal-dialog">
+		  <div class="modal-content">
+			  <div class="modal-header">
+				  <h5 class="modal-title" id="loginModalTitle" style="color:black !important;">Are you sure?</h5>
+				  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				  <span aria-hidden="true">&times;</span>
+				  </button>
+			  </div>
+			  <div class="modal-body">
+				  <form action="{% url 'delete_account' %}" method="POST" id="login_form">
+					  {% csrf_token %}
+					  <div class="form-group" style="color:black !important;">
+						It's sad to let you go! Your meTube account and data will be deleted permanently.
+					  </div>
+					  <br>
+					  <div style=" display: flex; justify-content: center; align-items: center;">
+					  	<button type="submit" class="btn btn-primary">Confirm</button>
+					  </div>
+				  </form>
+			  </div>
+		  </div>
+		</div>
+	</div>
+
+	<!-- ajax -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+	<!-- sidebar-menu js -->
+	<script src="static/assets/js/sidebar-menu.js"></script>
+
+
+	<!-- Custom scripts, for themes-->
+	<script src="static/assets/js/app-script.js"></script>
+	
+	
+	<script>
+
+	//for setting youtube link
+	var yt_id = JSON.parse("{{yt_id_js|escapejs}}");
+	var yt_link = "https://www.youtube.com/channel/"+yt_id;
+	document.getElementById("photoLink").href=yt_link;
+
+  // setting theme 
+  var theme =  JSON.parse("{{theme|escapejs}}");
+  var userName =  JSON.parse("{{uname_js|escapejs}}");
+  var Namme = JSON.parse("{{name_js|escapejs}}");
+  console.log(userName);
+
+  document.getElementById("theme"+theme).style.border="2px solid white";
+  setTheme = "bg-theme bg-theme"+theme
+  console.log(setTheme)
+  document.getElementById("boddy").className = setTheme;
+
+  var currentTheme = theme;
+
+  function changeTheme(id){
+	currentTheme = Number(id.substr(5,6));
+	console.log(currentTheme);
+    for(var i=1;i<=15;i++){
+      idd = "theme"+i;
+      document.getElementById(idd).style.border="none";
+    }
+    document.getElementById(id).style.border="2px solid white";
+  }
+
+
+
+	// for border of name input field 
+	function border_change(item){
+		console.log("change");
+		if(item=='newN'){
+			document.getElementById("newN").style.boxShadow="0px 0px 5px rgb(0, 247, 255)";
+			return;
+		}
+		document.getElementById("newUN").style.boxShadow="0px 0px 5px rgb(0, 247, 255)";
+
+
+	}
+
+	</script>
+
+
+   <!-- AJAX-->
+	<script>
+
+	// printing alert messages 
+	
+	function showMsg(){
+		console.log("message");
+		$("#alertMsg").fadeIn('slow', function () {
+			$(this).delay(1000).fadeOut('slow');
+		});
+	}
+
+	function showMsg2(){
+		console.log("message");
+		$("#alertMsg2").fadeIn('slow', function () {
+			$(this).delay(1000).fadeOut('slow');
+		});
+	}
+
+
+	function fetch_data_ajax() {
+
+		var usrName =  "{{username|escapejs}}";
+		console.log(usrName);
+      	if(usrName=="demo_user"){
+			console.log("not allowed!");
+        	showMsg2();
+        	return;
+      	}
+
+
+		if(theme == currentTheme){
+			console.log('same');
+			showMsg();
+			return;
+		}
+	
+		$.ajax({
+			url: "{% url 'theme_ajax' %}",
+			data: {
+				'themeNo': currentTheme,
+			},
+			type: 'get',
+			success: function (response) {
+				// temp =  JSON.parse(res['reply']);
+				console.log(response.message);
+				console.log("Data updated successfully with Ajax call.")
+				showMsg();
+			},
+			error: function (res) {
+				console.log("error",res.status);
+				alert("some error occured!")
+			}
+		});
+	}
+
+	function send_ajax(type){
+
+		var usrName =  "{{username|escapejs}}";
+		console.log(usrName);
+      	if(usrName=="demo_user"){
+			console.log("not allowed!");
+        	showMsg2();
+        	return;
+      	}
+
+		console.log(type);
+		if(type=='bug'){
+			mssg = document.getElementById("bug_report").value;
+			if(mssg.length<1){
+				document.getElementById("bug_report").placeholder="Gotta Type something!";
+				return;
+			}
+			document.getElementById("bug_report").value="";
+			document.getElementById("bug_report").placeholder="Thank-you "+userName;
+
+		}
+		else{ //feature
+			mssg = document.getElementById("feature_request").value;
+			if(mssg.length<1){
+				document.getElementById("feature_request").placeholder="Gotta Type something!";
+				return;
+			}
+			document.getElementById("feature_request").value="";
+			document.getElementById("feature_request").placeholder="Thank-you "+userName;
+		}
+
+		$.ajax({
+			url: "{% url 'message_from_user' %}",
+			data: {
+				'type': type,
+				'message': mssg,
+			},
+			type: 'get',
+			success: function (response) {
+				console.log(response.message);
+				console.log("Data updated successfully with Ajax call.")
+				showMsg();
+			},
+			error: function (res) {
+				console.log("error",res.status);
+				alert("some error occured!")
+			}
+		});
+	}
+
+	
+	// update profile 
+	function updateProfile(){
+
+		var usrName =  "{{username|escapejs}}";
+		console.log(usrName);
+      	if(usrName=="demo_user"){
+			console.log("not allowed!");
+        	showMsg2();
+        	return;
+      	}
+
+		newUsername = document.getElementById("newUN").value;
+		newName = document.getElementById("newN").value;
+		
+		// if(newUsername==0 || newName==0){
+		// 	alert('Name/Username cannot be empty!');
+		// 	return;
+		// }
+		if(newUsername==usrName) newUsername=0;
+		if(newName==Namme)  newName=0;
+
+		if(newName==0 && newUsername==0){
+			console.log("no changes");
+			alert('No changes found!');
+			return;
+		}
+
+		$.ajax({
+			url: "{% url 'change_details' %}",
+			data: {
+				'uname': newUsername,
+				'name' : newName,
+			},
+			type: 'get',
+			success: function (response) {
+				console.log(response.message);
+				console.log("name updated")
+				
+				if(newName!=0) Namme=newName;
+				if(newUsername!=0) userName=newUsername;
+
+				showMsg();
+			},
+			error: function (res) {
+				console.log("error",res.status);
+				alert("Username taken :(")
+			}
+		});
+	}
+
+	var usrName =  "{{username|escapejs}}";
+	if(usrName=="demo_user"){
+		document.getElementById("delete_account_div").style.display="none";
+	}
+
+	</script>
+
+<!-- search bar  -->
+<script>
+	const suggestionsDict = {
+		//dashboard 
+		"dashboard":"{% url 'loggedIn' %}",
+
+		"deleted playlists" :"{% url 'loggedIn' %}#deleted_playlists",
+		"added videos": "{% url 'loggedIn' %}#added_videos",
+		"deleted videos" : "{% url 'loggedIn' %}#deleted_videos",
+		"last online": "{% url 'loggedIn' %}#widgets",
+		"total Playlists": "{% url 'loggedIn' %}#widgets", 
+
+		//playlists
+		"playlists": "{% url 'playlists_page' %}",
+
+		//profile
+	  	"profile" : "{% url 'profile' %}",
+
+		"username":"#user_details",
+		"name":"#user_details",
+		"email":"#user_details",
+		"youtube channel":"#user_details",
+		"youtube channel ID":"#user_details",
+		"youtube channel":"#user_details",
+		"profile picture":"#profile_picture",
+		"customization":"#theme_customization",
+		"themes":"#theme_customization",
+		"report bug":"#report_message",
+		"request feature":"#report_message",
+		"contact developer":"#report_message",
+
+		//logout
+	  	"logout":  "{% url 'logout_handler' %}",  
+	};
+  
+	let suggestions = [
+		"dashboard",
+		"deleted playlists",
+		"added videos",
+		"deleted videos",
+		"deleted playlists",
+		"last online",
+		"total Playlists",
+
+		"playlists",
+
+		"profile" ,
+		"username",
+		"name",
+		"email",
+		"youtube channel",
+		"youtube channel ID",
+		"youtube channel",
+		"profile picture",
+		"customization",
+		"themes",
+		"report bug",
+		"request feature",
+		"contact developer",
+
+		//logout
+		"logout",  
+	]
+	
+  // getting all required elements
+  const searchWrapper = document.querySelector(".search-input");
+  const inputBox = searchWrapper.querySelector("input");
+  const suggBox = document.querySelector(".autocom-box");
+  const icon = searchWrapper.querySelector(".icon");
+  let linkTag = searchWrapper.querySelector("a");
+  let webLink;
+  
+  // if user press any key and release
+  inputBox.onkeyup = (e)=>{
+	let userData = e.target.value; //user enetered data
+	let emptyArray = [];
+	if(userData){
+		emptyArray = suggestions.filter((data)=>{
+			//filtering array value and user characters to lowercase and return only those words which are start with user enetered chars
+			return data.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase());
+		});
+		if(emptyArray.length==0){
+			return;
+		}
+		emptyArray = emptyArray.map((data)=>{
+			// passing return data inside li tag
+			return data = `<li>${data}</li>`;
+		});
+		searchWrapper.classList.add("active"); //show autocomplete box
+		showSuggestions(emptyArray);
+		let allList = suggBox.querySelectorAll("li");
+		for (let i = 0; i < allList.length; i++) {
+			//adding onclick attribute in all li tag
+			allList[i].setAttribute("onclick", "select(this)");
+		}
+	}else{
+		searchWrapper.classList.remove("active"); //hide autocomplete box
+	}
+  }
+  
+  function select(element){
+	let selectData = element.textContent;
+	inputBox.value = selectData;
+	icon.onclick = ()=>{
+		webLink = suggestionsDict[selectData];
+  
+		console.log(webLink);
+  
+		linkTag.setAttribute("href", webLink);
+		linkTag.click();
+	}
+	searchWrapper.classList.remove("active");
+  }
+  
+  function showSuggestions(list){
+	let listData;
+	if(!list.length){
+		userValue = suggestionsDict.value;
+		listData = `<li>${userValue}</li>`;
+	}else{
+	  listData = list.join('');
+	}
+	suggBox.innerHTML = listData;
+  }
+  
+  </script>
+</body>
+
+</html>

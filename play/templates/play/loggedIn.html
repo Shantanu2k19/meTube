@@ -1,0 +1,887 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+  <meta name="description" content=""/>
+  <meta name="author" content=""/>
+  <title>Dashboard</title>
+  
+  <!--favicon-->
+  <link rel="icon" href="static/img/favicon.png" type="image/x-icon">
+
+  <!-- Bootstrap core CSS-->
+  <link href="static/assets/css/bootstrap.min.css" rel="stylesheet"/>
+
+  <!-- Icons CSS-->
+  <link href="static/assets/css/icons.css" rel="stylesheet" type="text/css"/>
+  <!-- Sidebar CSS-->
+  <link href="static/assets/css/sidebar-menu.css" rel="stylesheet"/>
+  <!-- Custom Style-->
+  <link href="static/assets/css/app-style.css" rel="stylesheet"/>
+  
+</head>
+
+<style>
+  .thumbnails { 
+    object-fit:cover;
+    width: 160px;
+    height: 90px;
+  }
+
+  #added_pl{
+    color:greenyellow;
+  }
+
+  #deleted_pl{
+    color:rgb(245, 118, 0);
+  }
+
+  .removeBtn{
+    border:1px solid white;
+    border-radius: 20px;
+    background: none;
+    color:white;
+    padding-right: 30px;
+    padding-left: 30px;
+  }
+
+  .removeBtn:hover{
+    background-color: white;
+    color: black;
+  }
+
+  .authButton{
+    padding: 14px;
+    border-radius: 32px;
+    width: 200px;
+    border: 2px solid white;
+    font-size: small;
+  }
+
+  .alertMsg{
+  display: none;
+	color:white;
+	position: absolute;
+	padding: 10px;
+	border: 1 px solid;
+	text-align: center;
+	border-radius: 10px;
+	background: green;
+	min-width: 200px;
+  width:83%;
+}
+
+
+  tr:first-child{
+      counter-reset: Serial;
+  }
+
+  table{
+      border-collapse: separate;
+  }
+
+  tr td:first-child:before{
+    counter-increment: Serial;      
+    content: counter(Serial); 
+  }
+
+  .auth_div{
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    text-align: center; min-height: 200px;
+  }
+
+  a{
+    cursor: pointer;
+  }
+
+  /* Search bar  */
+  ::selection{
+  color: #fff;
+  background: #664AFF;
+}
+
+
+.search-input{
+  /* background: rgba(255, 255, 255, 0.4); */
+  width: 40%;
+  border-radius: 5px;
+  position: absolute;
+  /* box-shadow: 0px 1px 5px 3px rgba(0,0,0,0.12); */
+  margin-top: -17px;
+}
+
+.search-input input{
+  height: auto;
+  width: 111%;
+  outline: none;
+  border: 1px solid rgb(255,255,255,0.2);
+  border-radius: 5px;
+  padding: 4px 60px 4px 15px;
+  font-size: 13px;
+  box-shadow: 0px 0px 0px rgba(0,0,0,0.1);
+  background-color: rgb(255,255,255,0.2);
+  color: white;
+}
+
+.search-input.active input{
+  border-radius: 5px 5px 0 0;
+}
+
+.search-input .autocom-box{
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.search-input.active .autocom-box{
+  padding: 4px 4px;
+  opacity: 1;
+  border-radius: 5px;
+  font-size: 15px;
+  background-color: rgb(0,0,0,0.3);
+  color:white;
+  width:89%;
+  pointer-events: auto;
+}
+
+.autocom-box li{
+  list-style: none;
+  padding: 4px 12px;
+  display: none;
+  cursor: default;
+  border-radius: 5px;
+}
+
+.search-input.active .autocom-box li{
+  display: block;
+}
+.autocom-box li:hover{
+  background: rgb(255,255,255,0.7);
+  color:black;
+}
+
+.search-input .icon{
+  position: static;
+  right: 0px;
+  top: 0px;
+  text-align: right;
+  line-height: 38px;
+  font-size: 14px;
+  width: 25px;
+  padding-right: 8px;
+  color: white;
+  cursor: pointer;
+}
+
+.iconExtra{
+  position:relative;
+  left:-161%;
+}
+
+</style>
+
+<body id="boddy">
+	<!-- Start wrapper-->
+	<div id="wrapper">
+		<!--Start sidebar-wrapper-->
+		<div id="sidebar-wrapper" data-simplebar="" data-simplebar-auto-hide="true">
+			<div class="brand-logo">
+				<a href="{% url 'loggedIn' %}"> <img src="{% static 'img/logo.png' %}" class="logo-icon" alt="logo icon">
+					<h5 class="logo-text">MeTube</h5> </a>
+			</div>
+			<ul class="sidebar-menu do-nicescrol">
+				<li class="sidebar-header">NAVIGATION</li>
+				<li>
+					<a href="{% url 'loggedIn' %}"> <i class="zmdi zmdi-view-dashboard"></i> <span>Dashboard</span> </a>
+				</li>
+				<li>
+					<a href="{% url 'playlists_page' %}"> <i class="zmdi zmdi-format-list-bulleted"></i> <span>Playlists</span> </a>
+				</li>
+				<hr>
+				<li class="sidebar-header">ACCOUNTS</li>
+				<li>
+					<a href="{% url 'profile' %}"> <i class="zmdi zmdi-face"></i> <span>Profile</span> <small class="badge float-right badge-light">New</small> </a>
+				</li>
+				<hr>
+				<li>
+					<a href="{% url 'logout_handler' %}"> <i class="zmdi zmdi-lock"></i> <span>Logout</span> </a>
+				</li>
+			</ul>
+		</div>
+		<!--End sidebar-wrapper-->
+
+<!--Start topbar header-->
+<header class="topbar-nav">
+ <nav class="navbar navbar-expand fixed-top">
+  <ul class="navbar-nav mr-auto align-items-center">
+    <li class="nav-item">
+      <a class="nav-link toggle-menu" href="javascript:void();">
+       <i class="icon-menu menu-icon"></i>
+     </a>
+    </li>
+
+    <!-- search bar -->
+    <li class="nav-item">
+      <div class="search-input">
+        <a class="nav-link scrollto active" href="" hidden></a>
+
+        <div style="width: 84%; float:left;">
+          <input type="text" placeholder="Search..." class="extraInput">
+        </div>
+
+        <div class="icon" style="width: 10%;float:right;  position:relative">
+          <i class="icon-magnifier iconExtra"></i>
+        </div>
+
+        
+      <div class="autocom-box"></div>
+
+      </div>
+    </li>
+
+    <li>
+      <div class="alertMsg" id="alertMsg"></div>
+    </li>
+
+  </ul>
+
+  <ul class="navbar-nav align-items-center right-nav-link">
+      {{ username }}
+  </ul>
+     
+  <ul class="navbar-nav align-items-center right-nav-link">
+    <!-- account -->
+    <li class="nav-item">
+      <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" data-toggle="dropdown" href="#">
+        <span class="user-profile"><img src="{{ photo }}" class="img-circle" alt="user avatar"></span>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-right">
+       <li class="dropdown-item user-details">
+           <div class="media">
+             <div class="avatar"><img class="align-self-start mr-3" src="{{ photo }}" alt="user avatar"></div>
+            <div class="media-body">
+            <h6 class="mt-2 user-title">{{ name }}</h6>
+            <p class="user-subtitle">{{ email }}</p>
+            </div>
+           </div>
+        </li>
+        <li class="dropdown-divider"></li>
+        <li class="dropdown-item"><i class="icon-wallet mr-2"></i> <a href="{% url 'profile' %}">Account</a></li>
+        <li class="dropdown-divider"></li>
+        <li class="dropdown-item"><i class="icon-power mr-2"></i> <a href="{% url 'logout_handler' %}">Logout</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+</header>
+<!--End topbar header-->
+
+<div class="clearfix"></div>
+	
+  <div class="content-wrapper">
+    <div class="container-fluid">
+
+  <!--Start Dashboard Content-->
+
+
+  <!-- widgets -->
+	<div class="card mt-3" id="widgets">
+    <div class="card-content">
+        <div class="row row-group m-0">
+            <div class="col-12 col-lg-6 col-xl-3 border-light">
+                <div class="card-body">
+                  <h5 class="text-white mb-0">{{ last_online }}<span class="float-right"><i class="fa fa-shopping-cart"></i></span></h5>
+                    <div class="progress my-3" style="height:3px;">
+                       <div class="progress-bar" style="width:55%"></div>
+                    </div>
+                  <p class="mb-0 text-white small-font">Last Online<span class="float-right">{{ days }} days</span></p>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6 col-xl-3 border-light">
+                <div class="card-body">
+                  <h5 class="text-white mb-0">{{ pTot }}<span class="float-right"><i class="fa fa-usd"></i></span></h5>
+                    <div class="progress my-3" style="height:3px;">
+                       <div class="progress-bar" style="width:55%"></div>
+                    </div>
+                  <p class="mb-0 text-white small-font">Total Playlists</p>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6 col-xl-3 border-light">
+                <div class="card-body">
+                  <h5 class="text-white mb-0">{{vdel}} / {{vadd}} <span class="float-right"><i class="fa fa-eye"></i></span></h5>
+                    <div class="progress my-3" style="height:3px;">
+                       <div class="progress-bar" style="width:55%"></div>
+                    </div>
+                  <p class="mb-0 text-white small-font">Deleted/Added Videos</p>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6 col-xl-3 border-light">
+                <div class="card-body">
+                  <h5 class="text-white mb-0">{{pdel}} / {{padd}}<span class="float-right"><i class="fa fa-envira"></i></span></h5>
+                    <div class="progress my-3" style="height:3px;">
+                       <div class="progress-bar" style="width:55%"></div>
+                    </div>
+                  <p class="mb-0 text-white small-font">Deleted/Added Playlists</p>
+                </div>
+            </div>
+        </div>
+    </div>
+ </div>  
+  <!-- widgets ends-->
+
+  <!-- auth button  -->
+  <div class="row" id="check_auth">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          
+          <div><strong><h5>Authorize</h5></strong></div>
+          <div class="table">
+         <hr>
+         <div class="row mt-12">   
+          <div class="col-lg-6 col-sm-6 col-lg-6 col-6 auth_div" >
+            <h5>Please Authorize your MeTube account with YouTube</h5>
+          </div>
+          <div class="col-lg-6 col-sm-6 col-lg-6 col-6 auth_div">
+            <a href="{% url 'authorize' %}" class="removeBtn authButton">Authorize</a><br>
+            
+          </div>
+        </div>
+         <hr>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!--End Row-->
+   
+   <br>
+
+  <!-- table 1 -->
+	<div class="row" id="deleted_videos">
+	 <div class="col-12 col-lg-12">
+	   <div class="card">
+	     <div class="card-header">VIDEOS DELETED
+		  <div class="card-action">
+             <div class="dropdown">
+             <a href="javascript:void();" class="dropdown-toggle dropdown-toggle-nocaret" data-toggle="dropdown">
+              <i class="icon-options"></i>
+             </a>
+              <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" onclick="markAllRead('del_vid')">Mark all as Read</a>
+               </div>
+              </div>
+             </div>
+		 </div>
+	      <div class="table-responsive">
+          <table class="table align-items-center table-flush table-borderless" >
+            <tr>
+              <th style="width: 5%;">Sr no</th>
+              <th style="width: 40%;"">Title</th>
+              <th style="width: 40%;"">Description</th>
+              <th style="width: 5%;">Playlist</th>
+              <th style="width: 5%;">Thumbnail</th>
+              <th style="width: 5%;">Mark Read</th>
+            </tr>
+
+            <tbody id="del_vid">
+            {% for gg in deleted_vd %}
+              {% if gg.type == '1' %}
+              <tr id="{{gg.nid}}">
+                <td></td>
+                <td>{{gg.title}}</td>
+                <td>{{gg.desc}}</td>
+                <td>{{gg.playlist}}</td>
+                <td><img src="{{gg.thumb}}" alt="Thumbnail" class="thumbnails"></td>
+                <td><button class="removeBtn" id="{{gg.nid_2}}" onclick="deleteRow(id)">Remove</button></td>
+              </tr>
+              {% endif %}
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+	   </div>
+	 </div>
+	</div>
+
+  <br>
+
+  <!-- table 2 -->
+	<div class="row" id="added_videos">
+    <div class="col-12 col-lg-12">
+      <div class="card">
+        <div class="card-header">VIDEOS ADDED
+       <div class="card-action">
+              <div class="dropdown">
+              <a href="javascript:void();" class="dropdown-toggle dropdown-toggle-nocaret" data-toggle="dropdown">
+               <i class="icon-options"></i>
+              </a>
+               <div class="dropdown-menu dropdown-menu-right">
+                 <a class="dropdown-item" onclick="markAllRead('add_vid')">Mark all as Read</a>
+                </div>
+               </div>
+              </div>
+      </div>
+         <div class="table-responsive">
+           <table class="table align-items-center table-flush table-borderless">
+            <tr>
+              <th style="width: 5%;">Sr no</th>
+              <th style="width: 40%;"">Title</th>
+              <th style="width: 40%;"">Description</th>
+              <th style="width: 5%;">Playlist</th>
+              <th style="width: 5%;">Thumbnail</th>
+              <th style="width: 5%;">Mark Read</th>
+            </tr>
+ 
+            <tbody id="add_vid">
+             {% for gg in deleted_vd %}
+               {% if gg.type == '0' %}
+               <tr id="{{gg.nid}}">
+                 <td></td>
+                 <td>{{gg.title}}</td>
+                 <td>{{gg.desc}}</td>
+                 <td>{{gg.playlist}}</td>
+                 <td><img src="{{gg.thumb}}" alt="Thumbnail" class="thumbnails"></td>
+                 <td><button class="removeBtn" id="{{gg.nid_2}}" onclick="deleteRow(id)">Remove</button></td>
+               </tr>
+               {% endif %}
+             {% endfor %}
+            </tbody>
+           </table>
+         </div>
+      </div>
+    </div>
+   </div>
+
+   <br>
+
+<!-- table 3 -->
+<div class="row" id="deleted_playlists">
+  <div class="col-12 col-lg-12">
+    <div class="card">
+      <div class="card-header">PLAYLISTS ACTIVITY
+     <div class="card-action">
+            <div class="dropdown">
+            <a href="javascript:void();" class="dropdown-toggle dropdown-toggle-nocaret" data-toggle="dropdown">
+             <i class="icon-options"></i>
+            </a>
+             <div class="dropdown-menu dropdown-menu-right">
+               <a class="dropdown-item" onclick="markAllRead('del_plst')">Mark all as Read</a>
+              </div>
+             </div>
+            </div>
+    </div>
+       <div class="table-responsive">
+         <table class="table align-items-center table-flush table-borderless">
+           <tr>
+             <th style="width:20%">Sr no</th>
+             <th style="width:20%">Title</th>
+             <th style="width:20%">Thumbnail</th>
+             <th style="width:20%">Activity</th>
+             <th style="width:20%">Mark Read</th>
+           </tr>
+
+           <tbody id="del_plst">
+           {% for gg in deleted_pl %}
+             <tr id="{{gg.nid}}">
+               <td></td>
+               <td>{{gg.title}}</td>
+               {% if gg.type == '1' %}
+               <td id="deleted_pl">Deleted</td>
+                {% else %}
+                <td id="added_pl">Added</td>
+               {% endif %}
+               <td><img src="{{gg.thumb}}" alt="Thumbnail" class="thumbnails"></td>
+               <td><button class="removeBtn" id="{{gg.nid_2}}" onclick="deleteRow(id)">Remove</button></td>
+             </tr>
+           {% endfor %}
+          </tbody>
+         </table>
+       </div>
+
+    </div>
+  </div>
+ </div>
+
+    <!--End Row-->
+
+      <!--End Dashboard Content-->
+	  
+	<!--start overlay-->
+		  <div class="overlay toggle-menu"></div>
+		<!--end overlay-->
+		
+    </div>
+    <!-- End container-fluid-->
+    
+    </div><!--End content-wrapper-->
+   <!--Start Back To Top Button-->
+    <a href="javaScript:void();" class="back-to-top"><i class="fa fa-angle-double-up"></i> </a>
+    <!--End Back To Top Button-->
+	
+	<!--Start footer-->
+	<footer class="footer">
+      <div class="container">
+        <div class="text-center">
+          Copyright © 2021 Zodiac and Co.
+        </div>
+      </div>
+    </footer>
+	<!--End footer-->
+	
+  <!--start color switcher-->
+   <div class="right-sidebar">
+    <div class="switcher-icon">
+      <i class="zmdi zmdi-settings zmdi-hc-spin"></i>
+    </div>
+    <div class="right-sidebar-content">
+
+      <p class="mb-0">Gradient Background</p>
+      <hr>
+      
+      <ul class="switcher">
+        <li id="theme7"></li>
+        <li id="theme8"></li>
+        <li id="theme9"></li>
+        <li id="theme10"></li>
+        <li id="theme11"></li>
+        <li id="theme12"></li>
+		    <li id="theme13"></li>
+        <li id="theme14"></li>
+        <li id="theme15"></li>
+      </ul>
+      
+      <p class="mb-0">Gaussion Texture</p>
+      <hr>
+      
+      <ul class="switcher">
+        <li id="theme1"></li>
+        <li id="theme2"></li>
+        <li id="theme3"></li>
+        <li id="theme4"></li>
+        <li id="theme5"></li>
+        <li id="theme6"></li>
+      </ul>
+
+      <hr>
+
+      <ul>Save theme from account settings</ul>
+
+     </div>
+   </div>
+  <!--end color switcher-->
+   
+  </div><!--End wrapper-->
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="static/assets/js/jquery.min.js"></script>
+
+  <script src="static/assets/js/bootstrap.min.js"></script>
+
+  <!-- sidebar-menu js -->
+  <script src="static/assets/js/sidebar-menu.js"></script>
+
+  <!-- Custom scripts -->
+  <script src="static/assets/js/app-script.js"></script>
+
+  <script>
+    // setting theme 
+    var theme =  JSON.parse("{{theme|escapejs}}");
+
+    document.getElementById("theme"+theme).style.border="2px solid white";
+    setTheme = "bg-theme bg-theme"+theme
+    console.log(setTheme)
+    document.getElementById("boddy").className = setTheme;
+
+  </script>
+
+<script>
+  const suggestionsDict = {
+		//dashboard 
+		"dashboard":"{% url 'loggedIn' %}",
+
+		"deleted playlists" :"#deleted_playlists",
+		"added videos": "#added_videos",
+		"deleted videos" : "#deleted_videos",
+		"last online": "#widgets",
+		"total Playlists": "#widgets", 
+
+		//playlists
+		"playlists": "{% url 'playlists_page' %}",
+
+		//profile
+	  "profile" : "{% url 'profile' %}",
+
+		"username":"{% url 'profile' %}#user_details",
+		"name":"{% url 'profile' %}#user_details",
+		"email":"{% url 'profile' %}#user_details",
+		"youtube channel":"{% url 'profile' %}#user_details",
+		"youtube channel ID":"{% url 'profile' %}#user_details",
+		"youtube channel":"{% url 'profile' %}#user_details",
+		"profile picture":"{% url 'profile' %}#profile_picture",
+		"customization":"{% url 'profile' %}#theme_customization",
+		"themes":"{% url 'profile' %}#theme_customization",
+		"report bug":"{% url 'profile' %}#report_message",
+		"request feature":"{% url 'profile' %}#report_message",
+		"contact developer":"{% url 'profile' %}#report_message",
+
+		//logout
+	  "logout":  "{% url 'logout_handler' %}",  
+	};
+  
+	let suggestions = [
+		"dashboard",
+		"deleted playlists",
+		"added videos",
+		"deleted videos",
+		"deleted playlists",
+		"last online",
+		"total Playlists",
+
+		"playlists",
+
+		"profile" ,
+		"username",
+		"name",
+		"email",
+		"youtube channel",
+		"youtube channel ID",
+		"youtube channel",
+		"profile picture",
+		"customization",
+		"themes",
+		"report bug",
+		"request feature",
+		"contact developer",
+
+		//logout
+		"logout",  
+	]
+  
+// getting all required elements
+const searchWrapper = document.querySelector(".search-input");
+const inputBox = searchWrapper.querySelector("input");
+const suggBox = document.querySelector(".autocom-box");
+const icon = searchWrapper.querySelector(".icon");
+let linkTag = searchWrapper.querySelector("a");
+let webLink;
+
+// if user press any key and release
+inputBox.onkeyup = (e)=>{
+  let userData = e.target.value; //user enetered data
+  let emptyArray = [];
+  if(userData){
+      emptyArray = suggestions.filter((data)=>{
+          //filtering array value and user characters to lowercase and return only those words which are start with user enetered chars
+          return data.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase());
+      });
+      if(emptyArray.length==0){
+			  return;
+		  }
+      emptyArray = emptyArray.map((data)=>{
+          // passing return data inside li tag
+          return data = `<li>${data}</li>`;
+      });
+      searchWrapper.classList.add("active"); //show autocomplete box
+      showSuggestions(emptyArray);
+      let allList = suggBox.querySelectorAll("li");
+      for (let i = 0; i < allList.length; i++) {
+          //adding onclick attribute in all li tag
+          allList[i].setAttribute("onclick", "select(this)");
+      }
+  }else{
+      searchWrapper.classList.remove("active"); //hide autocomplete box
+  }
+}
+
+function select(element){
+  let selectData = element.textContent;
+  inputBox.value = selectData;
+  icon.onclick = ()=>{
+      webLink = suggestionsDict[selectData];
+
+      console.log(webLink);
+
+      linkTag.setAttribute("href", webLink);
+      linkTag.click();
+  }
+  searchWrapper.classList.remove("active");
+}
+
+function showSuggestions(list){
+  let listData;
+  if(!list.length){
+      userValue = suggestionsDict.value;
+      listData = `<li>${userValue}</li>`;
+  }else{
+    listData = list.join('');
+  }
+  suggBox.innerHTML = listData;
+}
+
+</script>
+  
+  <script>
+    var auth = JSON.parse("{{status|escapejs}}");
+    console.log(auth);
+    if(auth =='0'){  //not authorized, new user 
+      document.getElementById("deleted_videos").style.display="none";
+      document.getElementById("added_videos").style.display="none";
+      document.getElementById("deleted_playlists").style.display="none";
+      console.log('not authorized');
+    }
+    else if(auth=='1' || auth=='2'){
+      document.getElementById("check_auth").style.display = "none";
+      console.log('authorized');
+    }
+    else{
+      document.getElementById("check_auth").style.display = "none";
+      console.log("exception case, contact developer!");
+    }
+  </script>
+
+ <!-- creating table -->
+ <script>
+  function insertData(final_data){
+      var table = document.getElementById("table_1");
+      addHeadings("table_1")
+
+      for(var i=0;i<final_data.length;i++){
+          var row = table.insertRow(i+1);
+          var sr = row.insertCell(0);
+          var content = row.insertCell(1);
+          var nos = row.insertCell(2);
+          var sel = row.insertCell(3);
+
+          sr.innerHTML = i+1;
+          content.innerHTML = final_data[i].title;
+          nos.innerHTML = final_data[i].video_nos;
+          sel.innerHTML = final_data[i].Time;
+          amt.innerHTML = final_data[i].Amount;
+          stat.innerHTML = final_data[i].Status;
+          stat.setAttribute("id",final_data[i].Status);
+      }
+  }
+
+  function addHeadings(namme){
+      var table = document.getElementById(namme);
+
+      var row = table.insertRow(0);
+      var sr = row.insertCell(0);
+      var content = row.insertCell(1);
+      var nos = row.insertCell(2);
+      var sel = row.insertCell(3);
+
+      sr.innerHTML = "Sr. No.";
+      content.innerHTML = "Playlist Name";
+      nos.innerHTML = "No of Videos";
+      sel.innerHTML = "Select";
+  }
+  </script>
+
+  <script>
+    // removing from table
+
+    function deleteRow(rowNo){
+      var usrName =  "{{username|escapejs}}";
+      if(usrName=="demo_user"){
+        document.getElementById("alertMsg").innerHTML="Not available for demo user! Please login";
+        showMsg();
+        return;
+      }
+      
+      //delete row from table
+      rowID = "#"+rowNo.substr(1,rowNo.length)
+      console.log("deleting row no ",rowID);
+      $(rowID).fadeTo("slow",0.3, function(){
+          $(this).remove();
+      })
+
+      //send ajax to mark as read
+      $.ajax({
+        url: "{% url 'mark_as_read' %}",
+        data: {
+          'notif_id':rowNo.substr(1,rowNo.length),
+        },
+        type: 'get',
+        success: function (response) {
+          console.log(response.message);
+          console.log("notifications updated")
+        },
+        error: function (res) {
+          console.log("error",res.status);
+          alert("some error occured!")
+        }
+      });
+    }
+
+    function markAllRead(table_){
+      var usrName =  "{{username|escapejs}}";
+      if(usrName=="demo_user"){
+        document.getElementById("alertMsg").innerHTML="Not available for demo user! Please login";
+        showMsg();
+        return;
+      }
+      console.log("mark all for table:",table_);
+      document.getElementById(table_).innerHTML="";
+
+      // ajax to update db 
+      $.ajax({
+        url: "{% url 'mark_all_read' %}",
+        data: {
+          'for_table':table_,
+        },
+        type: 'get',
+        success: function (response) {
+          console.log(response.message);
+          console.log("db updated")
+        },
+        error: function (res) {
+          console.log("error",res.status);
+          alert("some error occured!")
+        }
+      });
+      
+      return;
+    }
+
+    function showMsg(){
+		console.log("message");
+		$("#alertMsg").fadeIn('slow', function () {
+			$(this).delay(1000).fadeOut('slow');
+		});
+	}
+
+
+  </script>
+  
+</body>
+</html>
+
+<!-- <a  link lolol 'authorize' %}">authorize</a><br> -->
+
+<!-- 
+    here on lol page
+{'kind': 'youtube#channelListResponse', 'etag': '2IGW_G8-Yeh2twfcwRfMl34XaXI', 'pageInfo': {'totalResults': 1, 'resultsPerPage': 5}, 'items': [{'kind': 'youtube#channel', 'etag': 'DurfZrwskf4qywPRJAVLdeuFgRU', 'id': 'UCtIXdhDh4VWzawni4pd-lKQ', 'snippet': {'title': 'Shantanu Singh', 'description': 'Lol', 'publishedAt': '2016-08-02T14:03:10Z', 'thumbnails': {'default': {'url': 'https://yt3.ggpht.com/ytc/AKedOLSau8IjzjWAWllb1Vn9suHDthYGjl1gZeZ8g4LLKw=s88-c-k-c0x00ffffff-no-rj', 'width': 88, 'height': 88}, 'medium': {'url': 'https://yt3.ggpht.com/ytc/AKedOLSau8IjzjWAWllb1Vn9suHDthYGjl1gZeZ8g4LLKw=s240-c-k-c0x00ffffff-no-rj', 'width': 240, 'height': 240}, 'high': {'url': 'https://yt3.ggpht.com/ytc/AKedOLSau8IjzjWAWllb1Vn9suHDthYGjl1gZeZ8g4LLKw=s800-c-k-c0x00ffffff-no-rj', 'width': 800, 'height': 800}}, 'localized': {'title': 'Shantanu Singh', 'description': 'Lol'}}}]}
+
+
+
+<span id="auth"></span>
+                  <br><br>
+                  <a href="{% url 'authorize' %}">auth</a>
+                  <br><br>
+                  <a href="{% url 'revoke' %}">revoke</a>
+                  <br><br>
+
+
+ -->

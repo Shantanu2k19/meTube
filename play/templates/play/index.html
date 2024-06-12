@@ -1,0 +1,434 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta name="theme-color" content="#37517e">
+        <title>MeTube</title>
+
+        <!-- Favicons -->
+        <link href="static/img/favicon.png" rel="icon">
+
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Jost:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+        <!-- Bootstrap -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+
+         <!-- Vendor CSS Files -->
+        <!-- display effect -->
+        <link href="static/vendor/aos/aos.css" rel="stylesheet">
+        <link href="static/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+
+        <!-- Template Main CSS File -->
+        <link href="static/css/style.css" rel="stylesheet">
+
+
+        <!-- script files  -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script> 
+    </head>
+
+    <style>
+        .alertMsg{
+        display: none;
+        color:white;
+        padding: 10px;
+        border: 1 px solid;
+        width:200px;
+        text-align: center;
+        border-radius: 10px;
+        background: green;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-right: -50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+    }
+
+    .title_{
+        font-size: 1rem;
+        font-weight: bold;
+        color: #37517e;
+    }
+
+    .demoBtn{
+        border-color: white !important;
+    }
+
+    .demoButton {
+        border: 2px solid #47b2e4;
+        border-radius: 20px;
+        height: 40px;
+        background: none;
+        color: white;
+        font-weight: 600;
+        padding: 6px;
+        cursor:pointer
+    }
+
+    </style>
+
+    <body>
+        
+        <!-- ======= Header ======= stvle.css.265-->
+        <header id="header" class="fixed-top ">
+            <div class="container d-flex align-items-center">
+                <a href="{% url 'index' %}" class="logo me-auto"><img src="static/img/logo.png" alt="" class="img-fluid"></a>
+                <div class="alertMsg" id="alertMsg">
+                    Coming soon!
+                </div>
+                <nav id="navbar" class="navbar">
+                    <ul>
+                        <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
+                        <li><a class="nav-link scrollto" href="#services">Features</a></li>
+                        <li><a class="nav-link scrollto" href="#team">Developers</a></li>
+                        <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
+                        <li><a href="{% url 'signup_page' %}">Signup</a></li>
+                        <li>
+                            <button type="button" class="getstarted" data-toggle="modal" data-target="#loginModal">
+                                Login
+                        </li>
+                        <li>
+                            <button type="button" class="getstarted" onclick="demoLogin()">
+                                Demo Login
+                        </li>
+                    </ul>
+                    <i class="bi bi-list mobile-nav-toggle"></i>
+                </nav>
+                <!-- .navbar -->
+            </div>
+        </header>
+        <!-- End Header -->
+
+
+        <!-- Login Modal -->
+        <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModal" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="loginModalTitle">Login Here</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="border: none !important;">
+                      <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+                  <div class="modal-body">
+                      <form action="{% url 'login' %}" method="POST" id="login_form">
+                          {% csrf_token %}
+                          <div class="form-group">
+                              <label for="username">Username</label>
+                              <input type="text" class="form-control" id="loginusername" name="loginusername" placeholder="Enter your username "required>
+                          </div>
+                          <div class="form-group">
+                              <label for="pass">Password</label>
+                              <input type="password" class="form-control" id="loginpassword" name="loginpassword" placeholder="Enter your password "required autocomplete="on">
+                          </div>
+                          <br>
+                          <div style="text-align:center;">
+                          <button type="submit" class="btn btn-primary" >Submit</button></div>
+                      </form>
+                  </div>
+              </div>
+            </div>
+        </div>
+
+
+        <!-- ======= Hero Section ======= -->
+        <section id="hero" class="d-flex align-items-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 d-flex flex-column justify-content-center pt-4 pt-lg-0 order-2 order-lg-1" data-aos="fade-up" data-aos-delay="200">
+                        <!-- Message -->
+                        <div class="message_text">
+                            {% if messages %}
+                            <ul id="mssg">
+                                {% for message in messages %}
+                                <li{% if message.tags %} class="{{ message.tags }}"{% endif %} style="color: yellow">{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}    
+                        </div>
+                        <!-- Message End-->
+                        
+                        <h1>Don't Delete videos anonymously YouTube!</h1>
+                        <h2>YouTube delete videos without telling the users who have saved those videos in their playlists. You can't even know the title of video that was deleted and hence can't find a replacement. <br>MeTube helps you to <strong>track the title of deleted videos</strong></h2>
+                        <div class="d-flex justify-content-center justify-content-lg-start">
+                            <a class="demoButton" onclick="demoLogin()"><i class="bi bi-play-circle"></i><span> Try Demo</span></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-in" data-aos-delay="200">
+                        <img src="static/img/hero-img.png" class="img-fluid animated" alt="">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- End Hero -->
+        
+        <main id="main">
+            <!-- ======= Services Section ======= -->
+            <section id="services" class="services section-bg">
+                <div class="container" data-aos="fade-up">
+                    <div class="section-title">
+                        <h2>Features</h2>
+                        <p>If YouTube is your main source of Music, and you Save a lot of Lyrical videos in your Playlists, then MeTube is for you. <br>It becomes mildly annoying when YouTube deletes video and you have no idea which song you are missing. </p>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-3 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
+                            <div class="icon-box">
+                                <div class="icon"><i class="bi bi-folder-x"></i></div>
+                                <h4><a href="">Tracking</a></h4>
+                                <p>Find changes in your videos and playists at one place. You can see the videos and playlists added/deleted from your coount.</p>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 d-flex align-items-stretch mt-4 mt-md-0" data-aos="zoom-in" data-aos-delay="200">
+                            <div class="icon-box">
+                                <div class="icon"><i class="bi bi-sliders"></i></div>
+                                <h4><a href="">Customization</a></h4>
+                                <p>Everyone likes customization. Select the theme you wanna rock in your profile.</p>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 d-flex align-items-stretch mt-4 mt-xl-0" data-aos="zoom-in" data-aos-delay="300">
+                            <div class="icon-box">
+                                <div class="icon"><i class="bi bi-file-earmark-music"></i></div>
+                                <h4><a href="">Playlists</a></h4>
+                                <p>All your playlists and details in one place. Get total Playlists count and number of songs in them.</p>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 d-flex align-items-stretch mt-4 mt-xl-0" data-aos="zoom-in" data-aos-delay="400">
+                            <div class="icon-box">
+                                <div class="icon"><i class="bi bi-plus-circle"></i></div>
+                                <h4><a href="">Improvements</a></h4>
+                                <p>You can send feature suggestions and report bug in Profile tab.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- End Services Section -->
+
+
+            <!-- ======= Cta Section ======= -->
+            <section id="cta" class="cta">
+                <div class="container" data-aos="zoom-in">
+                    <div class="row">
+                        <div class="col-lg-9 text-center text-lg-start">
+                            <h3>Youtube</h3>
+                            <p> "Users have the right to know atleast the title of video that got deleted"<br>-Sun Tzu, Art of war</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- End Cta Section -->
+
+
+            <!-- ======= Team Section ======= --> 
+            <section id="team" class="team section-bg">
+                <div class="container" data-aos="fade-up">
+                    <div class="section-title">
+                        <h2>Developers</h2>
+                        <p>We believe in open source community. Contributions are welcomed :)</p>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="member d-flex align-items-start" data-aos="zoom-in" data-aos-delay="100">
+                                <div class="pic"><img src="{% static 'img/developer1.png' %}" class="img-fluid" alt="developer1"></div>
+                                <div class="member-info">
+                                    <h4>Shantanu</h4>
+                                    <span>Final Year Undergrad Student</span>
+                                    <p>Delhi Technological University</p>
+                                    <div class="social">
+                                        <a onclick="comingSoon()"><i class="bi bi-twitter"></i></a>
+                                        <a onclick="comingSoon()"><i class="bi bi-facebook"></i></a>
+                                        <a onclick="comingSoon()"><i class="bi bi-instagram"></i></a>
+                                        <a onclick="comingSoon()"><i class="bi bi-github"></i></a>
+                                        <a onclick="comingSoon()"><i class="bi bi-linkedin"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 mt-4 mt-lg-0">
+                            <div class="member d-flex align-items-start" data-aos="zoom-in" data-aos-delay="200">
+                                <div class="pic"><img src="{% static 'img/developer2.png' %}" class="img-fluid" alt=""></div>
+                                <div class="member-info">
+                                    <h4>Zodiac</h4>
+                                    <span>Final Year Undergrad Student</span>
+                                    <p>Delhi Technological University</p>
+                                    <div class="social">
+                                        <a onclick="comingSoon()"><i class="bi bi-twitter"></i></a>
+                                        <a onclick="comingSoon()"><i class="bi bi-facebook"></i></a>
+                                        <a onclick="comingSoon()"><i class="bi bi-instagram"></i></a>
+                                        <a onclick="comingSoon()"><i class="bi bi-github"></i></a>
+                                        <a onclick="comingSoon()"><i class="bi bi-linkedin"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- End Team Section -->
+
+
+            <!-- ======= Contact Section ======= -->
+            <section id="contact" class="contact">
+                <div class="container" data-aos="fade-up">
+                    <div class="section-title">
+                        <h2>Contact</h2>
+                        <p>We would love to know you thoughts and suggestions.</p>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-5 d-flex align-items-stretch">
+                            <div class="info">
+                                <div class="address">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <h4>Location:</h4>
+                                    <p>Rohini, Delhi, India</p>
+                                </div>
+                                <div class="email">
+                                    <i class="bi bi-envelope"></i>
+                                    <h4>Email:</h4>
+                                    <p>shantanusingh2030@gmail.com</p>
+                                </div>
+                                <div class="phone">
+                                    <i class="bi bi-phone"></i>
+                                    <h4>Call:</h4>
+                                    <p>+91 ---- ------</p>
+                                  </div>
+                                <iframe src="https://maps.google.com/maps?q=delhi%20technological%20university&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" style="border:0; width: 100%; height: 340px;" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                        <div class="col-lg-7 mt-5 mt-lg-0 ">
+                                <div class="row">
+                                    <div class="col-lg-12 " >
+                                        <div class="info">
+                                            <span class="title_">More Project from developer</spap>
+                                                <hr>
+                                            <div class="address">
+                                                <i class="bi bi-bag-check"></i>
+                                                <a href="https://shantanu2k17.pythonanywhere.com/" target="_blank"><h4><u>Attendance System</u></h4></a>
+                                                <p style="font-weight: normal;">A fully automated attendance system. Raspberry-pi module is used for capturing and running facial recognition algorithm locally. Attendance on online portal is updated automatically.</p>
+                                            </div>
+                                            <div class="address">
+                                                <i class="bi bi-bag-check-fill"></i>
+                                                <a href="https://shantanu2k18.pythonanywhere.com/" target="_blank"><h4><u>Canteen 2.0</u></h4></a>
+                                                <p style="font-weight: normal;">A web application for canteen owners(manage menu and orders) and customers(login, order and payment).  <a href="https://shantanu2k19.pythonanywhere.com/" target="_blank"><u>CANTEEN</u></a> webApp on steroids</p>
+                                            </div>
+                                            <div class="address">
+                                                <i class="bi bi-music-note-list"></i>
+                                                <a href="https://shantanu2k20.pythonanywhere.com/" target="_blank"><h4><u>Spotify Tracker</u></h4>
+                                                <p style="font-weight: normal;">Use Soptify API to show recently played songs by a user</p>
+                                            </div>
+                                            <br>
+                                            <span class="title_">Hardware Projects</spap>
+                                                <hr>
+                                            <div class="address">
+                                                <i class="bi bi-pin-map"></i>
+                                                <a href="https://www.youtube.com/watch?v=TGFsjec14Uc" target="_blank"><h4><u>Automobile Tracker</u></h4></a>
+                                                <p style="font-weight: normal;">A device to track gps loaction of automobile and give emergency alerts in case of Accidents.</p>
+                                            </div>
+                                            <div class="address">
+                                                <i class="bi bi-tv" ></i>
+                                                <a href="https://www.youtube.com/watch?v=TI0OR6rSzqA" target="_blank"><h4><u>IR device</u></h4></a>
+                                                <p style="font-weight: normal;">Control Old IR based electronic devices using Android app</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- End Contact Section -->
+        </main>
+        <!-- End #main -->
+
+
+        <!-- ======= Footer ======= -->
+        <footer id="footer">
+            <div class="footer-top">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 footer-contact">
+                            <h3>meTube</h3>
+                            <p>
+                                Rohini, Delhi<br>
+                                India<br><br>
+                                <strong>Phone:</strong> +91 ----- -----<br>
+                                <strong>Email:</strong> meTube@gmail.com<br>
+                            </p>
+                        </div>
+                        <div class="col-lg-4 col-md-6 footer-links">
+                            <h4>Current Users of Metube</h4>
+                            <ul>
+                                <li id="count"></li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-4 col-md-6 footer-links">
+                            <h4>Our Social Networks</h4>
+                            <div class="social-links mt-3">
+                                <a onclick="comingSoon()"><i class="bi bi-twitter"></i></a>
+                                <a onclick="comingSoon()"><i class="bi bi-facebook"></i></a>
+                                <a onclick="comingSoon()"><i class="bi bi-instagram"></i></a>
+                                <a onclick="comingSoon()"><i class="bi bi-github"></i></a>
+                                <a onclick="comingSoon()"><i class="bi bi-linkedin"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        NOTE : if you are having difficulty Authorizing account again or you left the Authorization process in between, revoke the token from <a href="https://myaccount.google.com/u/0/permissions" target="_blank">this link</a> and try again. 
+                    </div>
+                </div>
+            </div>
+            <div class="container footer-bottom clearfix">
+                <div class="copyright">
+                    #hacktoberfest2021
+                </div>
+                <div class="credits">
+                    © Zodiac
+                </div>
+            </div>
+        </footer>
+        <!-- End Footer -->
+
+        <!-- back to top -->
+        <div id="preloader"></div>
+
+        <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+        
+        
+        <!-- Vendor JS Files -->
+        <script src="static/vendor/aos/aos.js"></script>
+        
+        <!-- Template Main JS File -->
+        <script src="static/js/main.js"></script>
+
+
+        <script>
+        function rickroll(){
+            document.getElementById("rickroll").innerHTML="sincere apologies";
+        }
+
+        function comingSoon(){
+            console.log("message");
+                $("#alertMsg").fadeIn('slow', function () {
+                $(this).delay(1000).fadeOut('slow');
+            });
+        }
+        let users= JSON.parse("{{count|escapejs}}");
+        // JSON.parse("{{theme|escapejs}}");
+        console.log(users);
+        document.getElementById("count").innerHTML=users+"/15";
+
+        //for demo user 
+
+        function demoLogin(){
+            document.getElementById("loginusername").value="demo_user";
+            document.getElementById("loginpassword").value="demouserwtf";
+            document.getElementById("login_form").submit();
+        }
+        </script>
+    </body>
+</html>

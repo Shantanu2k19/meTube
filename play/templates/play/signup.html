@@ -1,0 +1,270 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+  <meta name="theme-color" content="#002f54">
+  <title>Signup</title>
+  
+  <!--favicon-->
+  <link rel="icon" href="static/img/favicon.png" type="image/x-icon">
+  
+  <!-- Bootstrap core CSS-->
+  <link href="static/assets/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Icons CSS-->
+  <link href="static/assets/css/icons.css" rel="stylesheet" type="text/css"/>
+  <!-- Custom Style-->
+  <link href="static/assets/css/app-style.css" rel="stylesheet"/>
+  
+</head>
+<style>
+
+  .advice2{
+      color:yellow;
+      font-size: x-small;
+      padding: 10px;
+      text-align: center !important;
+  }
+
+  .submit{
+    border-color: rgba(255, 255, 255, 0.575);
+    font-size: .70rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    padding: 9px 19px;
+    border-radius: 0.25rem;
+    text-transform: uppercase;
+    display: block;
+    width: 100%;
+    color:white;
+    text-align: center;
+  }
+</style>
+
+<body class="bg-theme bg-theme1">
+
+<!-- Start wrapper-->
+ <div id="wrapper">
+
+	<div class="card card-authentication1 mx-auto my-4">
+		<div class="card-body">
+		 <div class="card-content p-2">
+		 	<div class="text-center">
+		 		<img src="static/img/logo.png" style="height: 60px;" alt="logo icon"><div><br></div>
+		 	</div>
+
+             <div class="advice2" id="advice2" >&nbsp;</div>
+             <br>
+
+		    <form method='post' action="{% url 'signup' %}">
+          {% csrf_token %} 
+			   <div class="position-relative has-icon-right">
+				  <input type="text" class="form-control" id="username" placeholder="Username*" name="username" onkeyup="check_username(), submit_button()">
+				  <div class="form-control-position">
+					  <i class="icon-user"></i>
+				  </div>
+			   </div>
+               <br>
+
+        <div class="form-group">
+           <div class="position-relative has-icon-right">
+            <input type="text" class="form-control input-shadow" placeholder="Name" id="fname" name="name" >
+            <div class="form-control-position">
+              <i class="icon-user"></i>
+            </div>
+           </div>
+          </div>
+
+			  <div class="form-group">
+			   <div class="position-relative has-icon-right">
+				  <input type="text" class="form-control input-shadow" placeholder="Email ID*" id="email" onkeyup="check_email(),submit_button()" name="email">
+				  <div class="form-control-position">
+					  <i class="icon-envelope-open"></i>
+				  </div>
+			   </div>
+			  </div>
+
+
+        <div class="row mt-12"> 
+                
+          <div class="col-sm-6" style="padding-top: 8px;">
+            <div class="form-group">
+              <div class="position-relative has-icon-right">
+               <input type="text" class="form-control input-shadow" placeholder="Password*" id="pass1" name="pass1" onkeyup="check_pass1(),submit_button()">
+               <div class="form-control-position">
+                 <i class="icon-lock"></i>
+               </div>
+              </div>
+             </div>
+            
+          </div>
+
+          <div class="col-sm-6" style="padding-top: 8px;">
+            <div class="form-group">
+              <div class="position-relative has-icon-right">
+               <input type="text" class="form-control input-shadow" placeholder="Repeat Password*" id="pass2" onkeyup="check_pass2(),submit_button()">
+               <div class="form-control-position">
+                 <i class="icon-lock"></i>
+               </div>
+              </div>
+             </div>
+
+          </div>
+        </div>
+      
+        
+        <br>
+			  
+			 <button type="submit" id="submit" class="submit">Sign Up</button>
+			
+			 </form>
+		   </div>
+		  </div>
+		  <div class="card-footer text-center py-3">
+		    <p>Already have an account? <a href="{% url 'index' %}"> <u>Sign In</u> here</a></p>
+		  </div>
+	     </div>
+    
+
+	</div>
+<!--wrapper-->
+	
+	
+  <!-- Custom scripts -->
+
+  <script>
+    // set initial condition for all 
+    function initial_condition(){
+        document.getElementById("username").style.cssText = "border: 2px solid red;";
+        document.getElementById("fname").style.cssText = "border: 2px solid greenyellow";
+        document.getElementById("email").style.cssText = "border: 2px solid red;";
+        document.getElementById("pass1").style.cssText = "border: 2px solid red;";
+        document.getElementById("pass2").style.cssText = "border: 2px solid red;";
+    }
+
+    initial_condition();
+    submit_button();
+
+    //variables for checking
+    var c_user = 0;
+    var c_mail = 0;
+    var c_pass = 0;
+
+    function check_username(){
+        if(document.querySelector('#username').value.length < 2){
+            document.getElementById("username").style.borderColor = "red";
+            advice_mssg("minimum 2 characters in username");
+            c_user = 0;
+            return;
+        }
+
+        //check 
+        var username_list =  JSON.parse("{{username_list|escapejs}}");
+        var entered_uname = document.getElementById("username").value;
+
+        if(username_list.includes(entered_uname)){
+            advice_mssg("Username taken");
+            document.getElementById("username").style.borderColor = "red";
+            c_user=0;
+            return;
+        }
+        else{
+            advice_mssg("&nbsp;");
+            document.getElementById("username").style.borderColor = "greenyellow";
+            c_user=1;
+            return;
+        }
+
+        advice_mssg("&nbsp;");
+        c_user = 1;
+        return;
+    }
+
+
+    function check_email(){
+        //check email
+        var email_list =  JSON.parse("{{email_list|escapejs}}");
+        entered_mail = document.getElementById("email").value;
+        // console.log(entered_mail);
+        if(entered_mail.length>3){
+
+            //check validity
+            const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            if(re.test(entered_mail.toLowerCase())){  //if valid
+                if(email_list.includes(entered_mail)){
+                    c_mail = 0;
+                    // advice_mssg("email already taken");
+                    document.getElementById("email").style.borderColor = "red";
+                    advice_mssg("Email taken!");
+                    return;
+                }
+                advice_mssg("&nbsp;");
+                document.getElementById("email").style.borderColor = "greenyellow";
+                c_mail = 1;
+                return;
+            }
+            else{
+                // advice_mssg("Not a valid email");
+                document.getElementById("email").style.borderColor = "red";
+                c_mail = 0;
+                return;
+            }
+        }
+        c_mail = 0;
+        return;
+    }
+
+    function check_pass1(){
+        if(document.querySelector('#pass1').value.length < 3){
+            document.getElementById("pass1").style.borderColor = "red";
+            return false;
+        }
+        else document.getElementById("pass1").style.borderColor = "greenyellow";
+        return true;
+    }
+    function check_pass2(){
+        if(check_pass1()){
+            if(document.querySelector('#pass2').value.length >= 3){
+                var p1 = document.getElementById("pass1").value;
+                var p2 = document.getElementById("pass2").value;
+
+                if(p1 === p2){
+                    document.getElementById("pass2").style.borderColor = "greenyellow";
+                    advice_mssg("&nbsp;");
+                    c_pass = 1;
+                    return true;
+                }
+                else{
+                    document.getElementById("pass2").style.borderColor = "red";
+                    advice_mssg("passwords not matching");
+                    c_pass = 0;
+                    return false;
+                }
+            }
+        }
+        document.getElementById("pass2").style.borderColor = "red";
+        c_pass = 0; 
+        return false;
+    }
+
+    function advice_mssg(mssg){
+        document.getElementById("advice2").innerHTML = mssg;
+    }
+
+    function submit_button(){
+        console.log('yeah');
+        if(c_user  && c_mail && c_pass ){
+            document.querySelector('#submit').disabled = false;
+            document.getElementById("submit").style.cssText = "background-color: rgb(34 255 1 / 60%);";
+        }
+        else{
+            document.querySelector('#submit').disabled = true;
+            document.getElementById("submit").style.cssText = "background-color: #a5a5a5;";
+        }
+    }
+</script>
+  
+</body>
+</html>

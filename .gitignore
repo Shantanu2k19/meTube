@@ -1,0 +1,13 @@
+/ytPlaylist/__pycache__
+
+/play/migrations/__pycache__
+
+/play/__pycache__
+
+db.sqlite3
+
+log_file.log
+
+/play/migrations/*
+
+lol.json
