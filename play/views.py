@@ -242,7 +242,7 @@ import google_auth_oauthlib.flow
 import googleapiclient.discovery
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-CLIENT_SECRETS_FILE = os.path.join(os.getcwd(),"ytPlaylist/lol.json")
+CLIENT_SECRETS_FILE = os.path.join(os.getcwd(),"lol.json")
 # CLIENT_SECRETS_FILE = os.path.join(os.getcwd(),"lol.json")
 
 SCOPES = ["https://www.googleapis.com/auth/youtube.readonly"]

@@ -26,7 +26,7 @@ SECRET_KEY = 'MY_SECRET_KEY_THAT_IS_KEPT_HIDDEN'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+# SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 #for collectstatic
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
