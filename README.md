@@ -4,17 +4,17 @@
 
 <table style="width:100%; border-collapse: collapse; border: none;">
   <tr>
-    <td style="width:50%;"><img src="https://github.com/Shantanu2k19/meTube/assets/47878607/e83a2fb5-0c7b-4328-b19e-03b79ea0446a" alt="Image 1" style="width:100%;height:auto;"/></td>
-    <td style="width:50%;"><img src="https://github.com/Shantanu2k19/meTube/assets/47878607/6d9daf8b-7996-4352-b43b-a3156be5ee9f" alt="Image 2" style="width:100%;height:auto;"/></td>
+    <td style="width:50%;"><img src="https://github.com/Shantanu2k19/meTube/assets/47878607/e899d322-6644-4a6c-be64-f4c0bd26cc98" alt="Image 1" style="width:100%;height:auto;"/></td>
+    <td style="width:50%;"><img src="https://github.com/Shantanu2k19/meTube/assets/47878607/bc3914fb-936f-4fa5-8ea5-bd3a750bda14" alt="Image 2" style="width:100%;height:auto;"/></td>
 
   </tr>
   <tr>
-    <td style="width:50%;"><img src="https://github.com/Shantanu2k19/meTube/assets/47878607/5eb68268-4e0c-4d5d-8409-1774f08fa5a0" alt="Image 3" style="width:100%;height:auto;"/></td>
-    <td style="width:50%;"><img src="https://github.com/Shantanu2k19/meTube/assets/47878607/b8231f8c-759c-4652-8c8c-c578af32114b" alt="Image 4" style="width:100%;height:auto;"/></td>
+    <td style="width:50%;"><img src="https://github.com/Shantanu2k19/meTube/assets/47878607/07cc461d-3b55-4b4c-a410-66dba499c858" alt="Image 3" style="width:100%;height:auto;"/></td>
+    <td style="width:50%;"><img src="https://github.com/Shantanu2k19/meTube/assets/47878607/69a293a0-92d9-4339-aa4d-e12756dfc082" alt="Image 4" style="width:100%;height:auto;"/></td>
   </tr>
   <tr>
-    <td style="width:50%;"><img src="https://github.com/Shantanu2k19/meTube/assets/47878607/06444869-2666-4334-884a-d1eda7cca8f6" alt="Image 5" style="width:100%;height:auto;"/></td>
-    <td style="width:50%;"><img src="https://github.com/Shantanu2k19/meTube/assets/47878607/6b8d27ff-2c45-4101-b72c-8953b8c59fc2" alt="Image 6" style="width:100%;height:auto;"/></td>
+    <td style="width:50%;"><img src="https://github.com/Shantanu2k19/meTube/assets/47878607/7dc12fbd-7065-4579-b211-4ce25e6a57af" alt="Image 5" style="width:100%;height:auto;"/></td>
+    <td style="width:50%;"><img src="https://github.com/Shantanu2k19/meTube/assets/47878607/7f1dab62-8857-4c13-9d37-95bd22bcb924" alt="Image 6" style="width:100%;height:auto;"/></td>
   </tr>
 </table>
 
