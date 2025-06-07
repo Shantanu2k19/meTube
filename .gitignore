@@ -11,3 +11,9 @@ log_file.log
 /play/migrations/*
 
 lol.json
+
+client_secret.json
+
+.env
+
+play/views/__pycache__/*
