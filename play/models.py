@@ -1,7 +1,6 @@
 from django.db import models
 from datetime import datetime
 
-# Create your models here.
 class usr(models.Model):
     one = '0' 
     two = '1'  

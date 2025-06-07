@@ -17,3 +17,5 @@ client_secret.json
 .env
 
 play/views/__pycache__/*
+
+ytPlaylist/settings.py

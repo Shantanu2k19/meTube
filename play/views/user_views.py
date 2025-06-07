@@ -38,7 +38,7 @@ class loggedIn(LoginRequiredMixin, View):
 			elif user.status == STATUS_EXISTING:
 				return self.handle_existing_user(user, request)
 
-			return render(request, "play/loggedIn.html", {})  # fallback
+			return render(request, "play/loggedIn.html", {})
 
 		except Exception as ex:
 			logger.exception("Unexpected error in get() method")
@@ -46,12 +46,11 @@ class loggedIn(LoginRequiredMixin, View):
 
 	def handle_new_user(self, user, request):
 		logger.info(f"{user.pk}_new user, need authorization")
-		# UI flow handles auth
-		return render(request, "play/authorize.html")
+		return self.render_dashboard(user)
 
 	def handle_first_login(self, user, request):
 		logger.info(f"{user.pk}_authorized user, first login")
-		if self.first_fetch(user, request):
+		if self.first_fetch(user):
 			return self.render_dashboard(user)
 		else:
 			messages.info(request, "Failed to fetch data from YouTube")
@@ -101,7 +100,8 @@ class loggedIn(LoginRequiredMixin, View):
 					"nid": f"v{x.notification_id}",
 					"nid_2": f"Dv{x.notification_id}"
 				} for x in v_changes
-			]
+			],
+      		'status' : user.status
 		}
 
 		user.last_online = date.today()
@@ -207,13 +207,6 @@ class loggedIn(LoginRequiredMixin, View):
 		return True
 
 	def find_changed_videos(self, changed, user):
-		from django.db.models import Q
-		import logging
-		import os
-		import requests
-		import json
-
-		logger = logging.getLogger(__name__)
 
 		for playlist_id in changed:
 			try:
