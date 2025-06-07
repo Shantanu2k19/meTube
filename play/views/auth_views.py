@@ -168,6 +168,9 @@ def authorize(request):
 		)
 
 		request.session["stat"] = state
+		if not state:
+			messages.error(request, "Session expired or invalid. Please try logging in again.")
+			return redirect("index")
 		return redirect(authorization_url)
 
 
