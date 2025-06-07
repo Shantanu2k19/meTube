@@ -64,36 +64,43 @@ def signup_page(request):
 		return render(request, "play/signup.html", context)
 
 
+
 def signup_view(request):
-		if request.method == "POST":
-				username = request.POST["username"]
-				password = request.POST["pass1"]
-				name = request.POST["name"]
-				mail = request.POST["email"]
+    if request.method == "POST":
+        username = request.POST.get("username", "").strip()
+        password = request.POST.get("pass1", "")
+        name = request.POST.get("name", "").strip()
+        mail = request.POST.get("email", "").strip()
 
-				# form = UserCreationForm(request.POST)
-				user = User.objects.create_user(
-						username=username, email=mail, password=password
-				)
-				login(request, user)
+        if usr.objects.count() > 15:
+            messages.info(request, "Max user count reached! Cannot create more accounts :(")
+            return render(request, "play/index.html")
 
-				usrr = usr.objects.create(
-						username=username, email=mail, name=name, password=password
-				)
-				usrr.save()
+        try:
+            if User.objects.filter(username=username).exists() or usr.objects.filter(username=username).exists():
+                messages.error(request, "Username already taken.")
+                return render(request, "play/index.html")
 
-				from datetime import datetime
+            if User.objects.filter(email=mail).exists() or usr.objects.filter(email=mail).exists():
+                messages.error(request, "Email already registered.")
+                return render(request, "play/index.html")
 
-				noww = datetime.now()
-				present = noww.strftime("%d/%m/%Y %H:%M:%S")
-				logger.info("\n new signup : " + username + " at" + str(present))
+            user = User.objects.create_user(username=username, email=mail, password=password)
+            login(request, user)
 
-				request.session["current_usr_pk"] = usrr.pk
+            usrr = usr.objects.create(username=username, email=mail, name=name, password=password)
 
-				return redirect("loggedIn")
-		else:
-				return render(request, "play/index.html")
+            logger.info(f"New signup: {username} at {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
+            request.session["current_usr_pk"] = usrr.pk
 
+            return redirect("loggedIn")
+
+        except Exception as ex:
+            logger.error(f"Exception occurred during signup: {ex}")
+            messages.error(request, "Some error occurred! Please try again.")
+            return render(request, "play/index.html")
+
+    return render(request, "play/index.html")
 
 def logout_handler(request):
 	try:
