@@ -104,7 +104,7 @@ class loggedIn(LoginRequiredMixin, View):
 					"nid_2": f"Dv{x.notification_id}"
 				} for x in v_changes
 			],
-      		'status' : user.status
+			  'status' : user.status
 		}
 
 		user.last_online = date.today()
@@ -138,6 +138,9 @@ class loggedIn(LoginRequiredMixin, View):
 
 				for v in videos_data:
 					snippet = v.get("snippet", {})
+					title=snippet.get("title", "")
+					if title == 'Private video':
+						continue
 					try:
 						videos.objects.create(
 							playlist_fkey=plist,
@@ -379,89 +382,89 @@ class loggedIn(LoginRequiredMixin, View):
 
 
 class playlists_page(LoginRequiredMixin, View):
-    def get(self, request):
-        user = usr.objects.get(pk=request.session["current_usr_pk"])
-        logger.info(f"Playlist: {user.username}, user_pk{request.session['current_usr_pk']}")
+	def get(self, request):
+		user = usr.objects.get(pk=request.session["current_usr_pk"])
+		logger.info(f"Playlist: {user.username}, user_pk{request.session['current_usr_pk']}")
 
-        playlists_qs = playlists.objects.filter(user_id=user).prefetch_related('videos_set')
+		playlists_qs = playlists.objects.filter(user_id=user).prefetch_related('videos_set')
 
-        playlist_list = []
-        playlist_data = []
+		playlist_list = []
+		playlist_data = []
 
-        for i, pl in enumerate(playlists_qs, start=1):
-            videos_qs = videos.objects.filter(playlist_id=pl.plist_id)
-            video_list = [
-                {
-                    "title": vid.title,
-                    "desc": vid.description[:10],
-                    "thumb": vid.thumbnail,
-                }
-                for vid in videos_qs
-            ]
+		for i, pl in enumerate(playlists_qs, start=1):
+			videos_qs = videos.objects.filter(playlist_id=pl.plist_id)
+			video_list = [
+				{
+					"title": vid.title,
+					"desc": vid.description[:10],
+					"thumb": vid.thumbnail,
+				}
+				for vid in videos_qs
+			]
 
-            playlist_info = {
-                "sno": i,
-                "title": pl.title,
-                "thumbnail": pl.thumbnail,
-                "video_no": pl.video_nos,
-                "link": f"https://www.youtube.com/playlist?list={pl.plist_id}",
-                "video_list": video_list,
-            }
+			playlist_info = {
+				"sno": i,
+				"title": pl.title,
+				"thumbnail": pl.thumbnail,
+				"video_no": pl.video_nos,
+				"link": f"https://www.youtube.com/playlist?list={pl.plist_id}",
+				"video_list": video_list,
+			}
 
-            playlist_list.append(playlist_info)
-            playlist_data.append(playlist_info.copy()) 
+			playlist_list.append(playlist_info)
+			playlist_data.append(playlist_info.copy()) 
 
-        thumb_nail = user.yt_thumbnail or "/static/img/profile.png"
-        name = user.name or user.username
+		thumb_nail = user.yt_thumbnail or "/static/img/profile.png"
+		name = user.name or user.username
 
-        context = {
-            "username": user.username,
-            "name": name,
-            "email": user.email,
-            "photo": thumb_nail,
-            "theme": user.theme,
-            "playlist_list": playlist_list,
-            "noOfPlaylists": len(playlist_list),
-            "playlist_data": json.dumps(playlist_data),
-        }
+		context = {
+			"username": user.username,
+			"name": name,
+			"email": user.email,
+			"photo": thumb_nail,
+			"theme": user.theme,
+			"playlist_list": playlist_list,
+			"noOfPlaylists": len(playlist_list),
+			"playlist_data": json.dumps(playlist_data),
+		}
 
-        return render(request, "play/playlists.html", context)
+		return render(request, "play/playlists.html", context)
 
 
 
 class DeleteAccountView(LoginRequiredMixin, View):
-    def post(self, request):
-        user = get_object_or_404(usr, pk=request.session["current_usr_pk"])
+	def post(self, request):
+		user = get_object_or_404(usr, pk=request.session["current_usr_pk"])
 
-        if user.username == DEMO_USERNAME:
-            logger.warning(f"{user.pk}_Attempt to delete demo account.")
-            messages.info(request, "Demo accounts cannot be deleted. Please contact the developer.")
-            return render(request, "play/error.html")
+		if user.username == DEMO_USERNAME:
+			logger.warning(f"{user.pk}_Attempt to delete demo account.")
+			messages.info(request, "Demo accounts cannot be deleted. Please contact the developer.")
+			return render(request, "play/error.html")
 
-        # Revoke OAuth token
-        ref_tok = user.refresh_token
-        url = f"https://oauth2.googleapis.com/revoke?token={ref_tok}"
-        try:
-            response = requests.post(url)
-            if response.status_code == 200:
-                logger.info(f"{user.pk}_Token successfully revoked.")
-            else:
-                logger.warning(f"{user.pk}_Token revocation failed: {response.status_code}")
-        except requests.exceptions.RequestException as e:
-            logger.error(f"{user.pk}_Error revoking token: {e}")
+		# Revoke OAuth token
+		ref_tok = user.refresh_token
+		url = f"https://oauth2.googleapis.com/revoke?token={ref_tok}"
+		try:
+			response = requests.post(url)
+			if response.status_code == 200:
+				logger.info(f"{user.pk}_Token successfully revoked.")
+			else:
+				logger.warning(f"{user.pk}_Token revocation failed: {response.status_code}")
+		except requests.exceptions.RequestException as e:
+			logger.error(f"{user.pk}_Error revoking token: {e}")
 
-        # Delete Django auth user
-        try:
-            auth_user = User.objects.get(username=user.username)
-            auth_user.delete()
-            logger.info(f"{user.pk}_Auth user deleted.")
-        except User.DoesNotExist:
-            logger.warning(f"{user.pk}_No matching Django auth user found.")
+		# Delete Django auth user
+		try:
+			auth_user = User.objects.get(username=user.username)
+			auth_user.delete()
+			logger.info(f"{user.pk}_Auth user deleted.")
+		except User.DoesNotExist:
+			logger.warning(f"{user.pk}_No matching Django auth user found.")
 
-        user.delete()
-        logger.info(f"{user.pk}_User profile deleted.")
+		user.delete()
+		logger.info(f"{user.pk}_User profile deleted.")
 
-        return redirect("index")
+		return redirect("index")
 
-    def get(self, request):
-        return render(request, "play/index.html")
+	def get(self, request):
+		return render(request, "play/index.html")
