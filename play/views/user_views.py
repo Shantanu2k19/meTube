@@ -61,7 +61,7 @@ class loggedIn(LoginRequiredMixin, View):
 
 	def handle_existing_user(self, user, request):
 		# logger.info(f"{user.pk}_older user")
-		if self.compare(user):
+		if self.compare(user, request):
 			return self.render_dashboard(user)
 		else:
 			messages.info(request, "Error occurred while syncing with YouTube")
@@ -159,7 +159,8 @@ class loggedIn(LoginRequiredMixin, View):
 		user.save()
 		return True
 
-	def compare(self, user):
+	def compare(self, user, request):
+		self.check_token(user, request)
 		headers = {"Authorization": f"Bearer {user.token}"}
 		url = f"https://youtube.googleapis.com/youtube/v3/playlists?part=snippet,contentDetails&channelId={user.yt_id}&key={os.getenv('myAPIkey')}&maxResults=50"
 		new_data = self.fetch_paginated_data(url, headers)

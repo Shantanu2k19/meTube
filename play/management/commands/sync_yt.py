@@ -22,11 +22,10 @@ class Command(BaseCommand):
             fake_request.session = {"current_usr_pk": user.pk}
             logger.info(f'{log_tag} processing : {user.username}')
             try:
-                if user.status == "1":
-                    logger.info(f'{log_tag} first time user')
-                    syncer.first_fetch(user)
-                elif user.status == "2":
+                if user.status == "2":
                     syncer.compare(user)
                     logger.info(f'{log_tag} Comparing user2 case')
+                else:
+                    logger.info(f'{log_tag} other case, ignore [{user.status}]')
             except Exception as e:
                 logger.error(f"{log_tag} Exception processing user {user.username}: {e}")
