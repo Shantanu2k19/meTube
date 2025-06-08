@@ -27,7 +27,7 @@ class loggedIn(LoginRequiredMixin, View):
 	def get(self, request):
 		try:
 			user = usr.objects.get(pk=request.session["current_usr_pk"])
-			logger.info(f"{user.pk}_$->loggedIn")
+			logger.info(f"Loggedin: {user.username}[{user.pk}] status: {user.status}")
 
 			if user.status != STATUS_NEW:
 				if self.check_token(user, request) == -1:
@@ -60,7 +60,7 @@ class loggedIn(LoginRequiredMixin, View):
 			return render(request, "play/error.html")
 
 	def handle_existing_user(self, user, request):
-		logger.info(f"{user.pk}_older user")
+		# logger.info(f"{user.pk}_older user")
 		if self.compare(user):
 			return self.render_dashboard(user)
 		else:
@@ -289,7 +289,7 @@ class loggedIn(LoginRequiredMixin, View):
 		return
 
 	def check_token(self, user, request):
-		logger.info(f"{request.session['current_usr_pk']}_AUTH->checking token")
+		# logger.info(f"{request.session['current_usr_pk']}_AUTH->checking token")
 		
 		now = datetime.now()
 		token_time_str = request.session.get("token_check_time")
@@ -298,7 +298,7 @@ class loggedIn(LoginRequiredMixin, View):
 			try:
 				token_time = datetime.fromisoformat(token_time_str)
 				if (now - token_time).total_seconds() < 3599:
-					logger.info("Token is still valid, no refresh needed.")
+					# logger.info("Token is still valid, no refresh needed.")
 					return 1
 			except ValueError:
 				logger.warning("Malformed token_check_time in session. Proceeding to refresh.")
@@ -378,8 +378,8 @@ class loggedIn(LoginRequiredMixin, View):
 
 class playlists_page(LoginRequiredMixin, View):
     def get(self, request):
-        logger.info(f"{request.session['current_usr_pk']}_$->playlists_page")
         user = usr.objects.get(pk=request.session["current_usr_pk"])
+        logger.info(f"Playlist: {user.username}, user_pk{request.session['current_usr_pk']}")
 
         playlists_qs = playlists.objects.filter(user_id=user).prefetch_related('videos_set')
 
