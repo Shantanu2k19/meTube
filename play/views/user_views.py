@@ -215,34 +215,26 @@ class loggedIn(LoginRequiredMixin, View):
 		return True
 
 	def find_changed_videos(self, changed, user):
-
 		for playlist_id in changed:
 			try:
-				# Fetch latest videos from YouTube
 				url = (
-					f"https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=200&playlistId={playlist_id}&key={os.getenv('myAPIkey')}"
+					f"https://youtube.googleapis.com/youtube/v3/playlistItems"
+					f"?part=snippet,contentDetails&maxResults=200"
+					f"&playlistId={playlist_id}&key={os.getenv('myAPIkey')}"
 				)
 				headers = {"Authorization": f"Bearer {user.token}"}
-				response = requests.get(url, headers=headers)
-
-				if response.status_code != 200:
-					logger.error(f"Failed to fetch playlist {playlist_id}: {response.text}")
-					continue
-
-				video_data = response.json()
+				items = self.fetch_paginated_data(url, headers)
 				video_info = {
-					item["contentDetails"]["videoId"]: [idx, False]
-					for idx, item in enumerate(video_data.get("items", []))
+					item["contentDetails"]["videoId"]: (idx, item)
+					for idx, item in enumerate(items)
 				}
 
-				# Fetch videos from DB
+				yt_video_ids = set(video_info.keys())
+
 				db_videos = videos.objects.filter(playlist_id=playlist_id)
 				db_video_ids = {v.video_id for v in db_videos}
 
-				# Detect deleted videos
-				yt_video_ids = set(video_info.keys())
 				deleted_ids = db_video_ids - yt_video_ids
-
 				if deleted_ids:
 					pl_obj = playlists.objects.filter(plist_id=playlist_id).first()
 					for video in db_videos.filter(video_id__in=deleted_ids):
@@ -259,11 +251,10 @@ class loggedIn(LoginRequiredMixin, View):
 				# Detect added videos
 				added_ids = yt_video_ids - db_video_ids
 				for vid in added_ids:
-					idx = video_info[vid][0]
-					item = video_data["items"][idx]
+					idx, item = video_info[vid]
 					snippet = item["snippet"]
 
-					vid_title = snippet["title"]
+					vid_title = snippet.get("title", "")
 					vid_desc = snippet.get("description", "")[:63]
 					vid_thumb = snippet.get("thumbnails", {}).get("high", {}).get("url", "")
 
@@ -282,7 +273,7 @@ class loggedIn(LoginRequiredMixin, View):
 
 					video_change.objects.create(
 						user_id=user,
-						type="0",
+						type="0",  # added
 						v_playlistName=pl_obj.title,
 						v_title=vid_title,
 						v_description=vid_desc,
