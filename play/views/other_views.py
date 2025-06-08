@@ -26,7 +26,7 @@ def mark_as_read(request):
 
 		request_data = request.GET.get("notif_id")
 		try:
-			logger.info(f"AJAX mark_as_read: for user_pk[{request.session["current_usr_pk"]}], type: [{request_data[0]}]")
+			logger.info(f"AJAX mark_as_read: for user_pk[{request.session['current_usr_pk']}], type: [{request_data[0]}]")
 
 			type_of_notif = request_data[0]
 			notif_number = int(request_data[1 : len(request_data)])
@@ -58,7 +58,7 @@ def mark_all_read(request):
 	request_data = request.GET.get("for_table")
 	try:
 		user = usr.objects.get(pk=request.session["current_usr_pk"])
-		logger.info(f"AJAX mark_all_read: for {user.username}, user_pk[{request.session["current_usr_pk"]}], request_data [{request_data}]")
+		logger.info(f"AJAX mark_all_read: for {user.username}, user_pk[{request.session['current_usr_pk']}], request_data [{request_data}]")
 		if request_data == "add_vid":
 				inst = video_change.objects.filter(user_id=user, status="0", type="0")
 				for x in inst:
@@ -100,7 +100,7 @@ def theme_ajax(request):
 	request_data = request.GET.get("themeNo")
 	try:
 		user = usr.objects.get(pk=request.session["current_usr_pk"])
-		logger.info(f"AJAX theme_ajax: for {user.username}, user_pk[{request.session["current_usr_pk"]}], request_data [{request_data}]")
+		logger.info(f"AJAX theme_ajax: for {user.username}, user_pk[{request.session['current_usr_pk']}], request_data [{request_data}]")
 		user.theme = request_data
 		user.save()
 	except Exception as e:
@@ -128,7 +128,7 @@ def message_from_user(request):
 		typee = "1"
 	try:
 		user = usr.objects.get(pk=request.session["current_usr_pk"])
-		logger.info(f"AJAX message_from_user: for {user.username}, user_pk[{request.session["current_usr_pk"]}], typee [{typee}]")
+		logger.info(f"AJAX message_from_user: for {user.username}, user_pk[{request.session['current_usr_pk']}], typee [{typee}]")
 		instance = user_message.objects.create(
 			type=typee,
 			content=message,
@@ -156,7 +156,7 @@ def change_details(request):
 	newUname = request.GET.get("uname")
 
 	user = usr.objects.get(pk=request.session["current_usr_pk"])
-	logger.info(f"AJAX change_details: for {user.username}, user_pk[{request.session["current_usr_pk"]}]")
+	logger.info(f"AJAX change_details: for {user.username}, user_pk[{request.session['current_usr_pk']}]")
 
 	if newUname != "0":
 		try:
