@@ -240,8 +240,8 @@ class loggedIn(LoginRequiredMixin, View):
 
 					if video_id and snippet.get("thumbnails") and title not in ['Private video', 'Deleted video']:
 						video_info[video_id] = (idx, item)
-					else:
-						logger.info('private video found')
+					# else:
+						# logger.info('private video found')
 
 				yt_video_ids = set(video_info.keys())
 
