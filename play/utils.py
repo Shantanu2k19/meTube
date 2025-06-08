@@ -1,6 +1,6 @@
 from play.models import usr 
 import logging
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("play")
 
 DEMO_USERNAME = "demo_user"
 STATUS_NEW = "0"

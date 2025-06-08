@@ -16,7 +16,7 @@ from play.models import usr, playlists, playlist_change, video_change, videos
 from play.utils import DEMO_USERNAME, STATUS_EXISTING, STATUS_NEW, STATUS_FIRST_LOGIN
 
 # Logger setup
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("play")
 logger.setLevel(logging.DEBUG)
 
 from dotenv import load_dotenv

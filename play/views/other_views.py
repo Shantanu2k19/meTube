@@ -10,7 +10,7 @@ from ..models import usr, video_change, playlist_change, user_message
 from play.utils import verifyRequest
 
 import logging
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("play")
 
 ###########################################################
 #                      Ajax                               #

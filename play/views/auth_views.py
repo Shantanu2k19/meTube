@@ -20,7 +20,7 @@ env_path = os.path.join(settings.BASE_DIR, '.env')
 load_dotenv(dotenv_path=env_path)
 
 # Logger setup
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("play")
 logger.setLevel(logging.DEBUG)
 
 def handLogin(request):
