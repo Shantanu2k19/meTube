@@ -54,7 +54,7 @@ class videos(models.Model):
     playlist_fkey = models.ForeignKey(playlists,on_delete=models.CASCADE)
     playlist_id = models.CharField(max_length=64)
     video_id = models.CharField(max_length=128)
-    description = models.CharField(max_length=128)
+    description = models.CharField(max_length=128, null=True, blank=True)
     title = models.CharField(max_length=128)
     thumbnail = models.CharField(max_length=128)
 
@@ -84,7 +84,7 @@ class video_change(models.Model):
     #for video
     v_playlistName = models.CharField(max_length=64, blank=True)
     v_title = models.CharField(max_length=128)
-    v_description = models.CharField(max_length=128)
+    v_description = models.CharField(max_length=128, null=True, blank=True)
     v_thumbnail = models.CharField(max_length=128)
 
 

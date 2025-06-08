@@ -140,6 +140,7 @@ class loggedIn(LoginRequiredMixin, View):
 					snippet = v.get("snippet", {})
 					title=snippet.get("title", "")
 					if title == 'Private video':
+						logger.info('private video found')
 						continue
 					try:
 						videos.objects.create(
@@ -192,8 +193,10 @@ class loggedIn(LoginRequiredMixin, View):
 			if pid in db_playlists:
 				if db_playlists[pid].etag != etag:
 					db_playlists[pid].etag = etag
+					db_playlists[pid].title = pl["snippet"]["title"]
+					db_playlists[pid].thumbnail = pl["snippet"]["thumbnails"]["high"]["url"]
+					db_playlists[pid].video_nos = pl["contentDetails"]["itemCount"]
 					db_playlists[pid].save()
-					changed.append(pid)
 				del db_playlists[pid]
 			else:
 				playlists.objects.create(
@@ -205,19 +208,19 @@ class loggedIn(LoginRequiredMixin, View):
 					video_nos=pl["contentDetails"]["itemCount"]
 				)
 				playlist_change.objects.create(user_id=user, type="0", p_title=pl["snippet"]["title"], p_thumbnail=pl["snippet"]["thumbnails"]["high"]["url"])
+			changed.append(pid)
 		logger.info(f"Total deleted playLists : {len(db_playlists)}")
-		logger.info(f"Total changed playLists : {len(changed)}")
-  
+		logger.info(f"Total playLists : {len(changed)}")
 		for deleted in db_playlists.values():
 			playlist_change.objects.create(user_id=user, type="1", p_title=deleted.title, p_thumbnail=deleted.thumbnail)
 			deleted.delete()
 
-		if changed:
-			self.find_changed_videos(changed, user)
+		self.find_changed_videos(changed, user)
 
 		return True
 
 	def find_changed_videos(self, changed, user):
+		logger.info(f"find_changed_videos---")
 		for playlist_id in changed:
 			try:
 				url = (
@@ -235,8 +238,10 @@ class loggedIn(LoginRequiredMixin, View):
 					video_id = content_details.get("videoId")
 					title = snippet.get("title", "")
 
-					if video_id and title != 'Private video':
+					if video_id and snippet.get("thumbnails") and title not in ['Private video', 'Deleted video']:
 						video_info[video_id] = (idx, item)
+					else:
+						logger.info('private video found')
 
 				yt_video_ids = set(video_info.keys())
 
@@ -244,6 +249,7 @@ class loggedIn(LoginRequiredMixin, View):
 				db_video_ids = {v.video_id for v in db_videos}
 
 				deleted_ids = db_video_ids - yt_video_ids
+				logger.info(f'Deteted videos count: [{len(deleted_ids)}]')
 				if deleted_ids:
 					pl_obj = playlists.objects.filter(plist_id=playlist_id).first()
 					for video in db_videos.filter(video_id__in=deleted_ids):
