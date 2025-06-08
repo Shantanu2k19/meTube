@@ -9,7 +9,7 @@ from django.contrib import messages
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
-
+from django.conf import settings
 from play.models import usr, playlists, playlist_change, video_change, videos
 
 # Constants
@@ -19,6 +19,9 @@ from play.utils import DEMO_USERNAME, STATUS_EXISTING, STATUS_NEW, STATUS_FIRST_
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
+from dotenv import load_dotenv
+env_path = os.path.join(settings.BASE_DIR, '.env')
+load_dotenv(dotenv_path=env_path)
 
 class loggedIn(LoginRequiredMixin, View):
 	def get(self, request):

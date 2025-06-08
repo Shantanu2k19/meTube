@@ -15,42 +15,51 @@ from play.models import usr
 from .index_views import index
 from .user_views import loggedIn
 
+from dotenv import load_dotenv
+env_path = os.path.join(settings.BASE_DIR, '.env')
+load_dotenv(dotenv_path=env_path)
+
 # Logger setup
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 def handLogin(request):
-		if request.method == "POST":
-				# Get the post parameters
-				loginusername = request.POST["loginusername"]
-				loginpassword = request.POST["loginpassword"]
-				user = authenticate(username=loginusername, password=loginpassword)
-				if user is not None:
-						from datetime import datetime
+    if request.method == "POST":
+        try:
+            # Get the post parameters
+            loginusername = request.POST["loginusername"]
+            loginpassword = request.POST["loginpassword"]
+            user = authenticate(username=loginusername, password=loginpassword)
+            if user is not None:
+                from datetime import datetime
 
-						noww = datetime.now()
-						present = noww.strftime("%d/%m/%Y %H:%M:%S")
-						curr_user = usr.objects.get(username=loginusername)
-						login(request, user)
-						request.session["current_usr_pk"] = curr_user.pk
-						logger.info(
-								"\nusername : " + loginusername + " logged-In at " + str(present)
-						)
+                noww = datetime.now()
+                present = noww.strftime("%d/%m/%Y %H:%M:%S")
+                curr_user = usr.objects.get(username=loginusername)
+                login(request, user)
+                request.session["current_usr_pk"] = curr_user.pk
+                logger.info(
+                        "\nusername : " + loginusername + " logged-In at " + str(present)
+                )
 
-						# for refresh token handling
-						if request.session.has_key("token_check_time"):
-								print("deleting")
-								del request.session["token_check_time"]
+                # for refresh token handling
+                if request.session.has_key("token_check_time"):
+                        print("deleting")
+                        del request.session["token_check_time"]
 
-						return redirect("loggedIn")
-				else:
-						messages.info(request, "Invalid credentials. Please try again!")
-						return redirect("index")
-		return HttpResponse("index")
+                return redirect("loggedIn")
+            else:
+                messages.info(request, "Invalid credentials. Please try again!")
+                return redirect("index")
+        except Exception as ex:
+            logger.info(f"Error login: {ex}")
+            messages.info(request, "Something went wrong. Please try again!")
+            return redirect("index")
+    return HttpResponse("index")
 
 
 def signup_page(request):
-		users = usr.objects.all()
+		users = User.objects.all()
 		username_list = []
 		email_list = []
 		for x in users:
@@ -66,41 +75,41 @@ def signup_page(request):
 
 
 def signup_view(request):
-    if request.method == "POST":
-        username = request.POST.get("username", "").strip()
-        password = request.POST.get("pass1", "")
-        name = request.POST.get("name", "").strip()
-        mail = request.POST.get("email", "").strip()
+	if request.method == "POST":
+		username = request.POST.get("username", "").strip()
+		password = request.POST.get("pass1", "")
+		name = request.POST.get("name", "").strip()
+		mail = request.POST.get("email", "").strip()
 
-        if usr.objects.count() > 15:
-            messages.info(request, "Max user count reached! Cannot create more accounts :(")
-            return render(request, "play/index.html")
+		if usr.objects.count() > 15:
+			messages.info(request, "Max user count reached! Cannot create more accounts :(")
+			return render(request, "play/index.html")
 
-        try:
-            if User.objects.filter(username=username).exists() or usr.objects.filter(username=username).exists():
-                messages.error(request, "Username already taken.")
-                return render(request, "play/index.html")
+		try:
+			if User.objects.filter(username=username).exists() or usr.objects.filter(username=username).exists():
+				messages.error(request, "Username already taken.")
+				return render(request, "play/index.html")
 
-            if User.objects.filter(email=mail).exists() or usr.objects.filter(email=mail).exists():
-                messages.error(request, "Email already registered.")
-                return render(request, "play/index.html")
+			if User.objects.filter(email=mail).exists() or usr.objects.filter(email=mail).exists():
+				messages.error(request, "Email already registered.")
+				return render(request, "play/index.html")
 
-            user = User.objects.create_user(username=username, email=mail, password=password)
-            login(request, user)
+			user = User.objects.create_user(username=username, email=mail, password=password)
+			login(request, user)
 
-            usrr = usr.objects.create(username=username, email=mail, name=name, password=password)
+			usrr = usr.objects.create(username=username, email=mail, name=name, password=password)
 
-            logger.info(f"New signup: {username} at {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
-            request.session["current_usr_pk"] = usrr.pk
+			logger.info(f"New signup: {username} at {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
+			request.session["current_usr_pk"] = usrr.pk
 
-            return redirect("loggedIn")
+			return redirect("loggedIn")
 
-        except Exception as ex:
-            logger.error(f"Exception occurred during signup: {ex}")
-            messages.error(request, "Some error occurred! Please try again.")
-            return render(request, "play/index.html")
+		except Exception as ex:
+			logger.error(f"Exception occurred during signup: {ex}")
+			messages.error(request, "Some error occurred! Please try again.")
+			return render(request, "play/index.html")
 
-    return render(request, "play/index.html")
+	return render(request, "play/index.html")
 
 def logout_handler(request):
 	try:
