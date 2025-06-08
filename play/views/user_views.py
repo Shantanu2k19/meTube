@@ -224,10 +224,16 @@ class loggedIn(LoginRequiredMixin, View):
 				)
 				headers = {"Authorization": f"Bearer {user.token}"}
 				items = self.fetch_paginated_data(url, headers)
-				video_info = {
-					item["contentDetails"]["videoId"]: (idx, item)
-					for idx, item in enumerate(items)
-				}
+
+				video_info = {}
+				for idx, item in enumerate(items):
+					content_details = item.get("contentDetails", {})
+					snippet = item.get("snippet", {})
+					video_id = content_details.get("videoId")
+					title = snippet.get("title", "")
+
+					if video_id and title != 'Private video':
+						video_info[video_id] = (idx, item)
 
 				yt_video_ids = set(video_info.keys())
 
@@ -252,7 +258,7 @@ class loggedIn(LoginRequiredMixin, View):
 				added_ids = yt_video_ids - db_video_ids
 				for vid in added_ids:
 					idx, item = video_info[vid]
-					snippet = item["snippet"]
+					snippet = item.get("snippet", {})
 
 					vid_title = snippet.get("title", "")
 					vid_desc = snippet.get("description", "")[:63]
