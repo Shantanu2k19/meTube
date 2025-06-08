@@ -160,6 +160,7 @@ class loggedIn(LoginRequiredMixin, View):
 		return True
 
 	def compare(self, user, request):
+		logger.info('---Comparing---')
 		self.check_token(user, request)
 		headers = {"Authorization": f"Bearer {user.token}"}
 		url = f"https://youtube.googleapis.com/youtube/v3/playlists?part=snippet,contentDetails&channelId={user.yt_id}&key={os.getenv('myAPIkey')}&maxResults=50"
@@ -170,6 +171,7 @@ class loggedIn(LoginRequiredMixin, View):
 
 		current_etag = json.loads(requests.get(url, headers=headers).text).get("etag")
 		if user.e_tag == current_etag:
+			logger.info('No changes')
 			return True
 
 		user.e_tag = current_etag
@@ -200,7 +202,9 @@ class loggedIn(LoginRequiredMixin, View):
 					video_nos=pl["contentDetails"]["itemCount"]
 				)
 				playlist_change.objects.create(user_id=user, type="0", p_title=pl["snippet"]["title"], p_thumbnail=pl["snippet"]["thumbnails"]["high"]["url"])
-
+		logger.info(f"Total deleted playLists : {len(db_playlists)}")
+		logger.info(f"Total changed playLists : {len(changed)}")
+  
 		for deleted in db_playlists.values():
 			playlist_change.objects.create(user_id=user, type="1", p_title=deleted.title, p_thumbnail=deleted.thumbnail)
 			deleted.delete()

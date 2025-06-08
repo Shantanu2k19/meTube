@@ -23,7 +23,7 @@ class Command(BaseCommand):
             logger.info(f'{log_tag} processing : {user.username}')
             try:
                 if user.status == "2":
-                    syncer.compare(user)
+                    syncer.compare(user, fake_request)
                     logger.info(f'{log_tag} Comparing user2 case')
                 else:
                     logger.info(f'{log_tag} other case, ignore [{user.status}]')
