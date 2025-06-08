@@ -171,8 +171,8 @@ class loggedIn(LoginRequiredMixin, View):
 
 		current_etag = json.loads(requests.get(url, headers=headers).text).get("etag")
 		if user.e_tag == current_etag:
-			logger.info('No changes')
-			return True
+			logger.info('etag same')
+			# return True
 
 		user.e_tag = current_etag
 		user.save()
